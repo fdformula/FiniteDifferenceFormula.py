@@ -173,7 +173,7 @@ of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), 
 fd.compute(1, range(0,3), true)        # find, generate, and print "3"-point forward formula for f'(x[i])
 fd.compute(2, range(-3,1), true)       # find, generate, and print "4"-point backward formula for f''(x[i])
 fd.compute(3, range(-9,10))            # find "19"-point central formula for f'''(x[i])
-fd.decimalplaces(6)                    # use 6 decimal places to generate Julia functions of computed formulas
+fd.decimalplaces(6)                    # use 6 decimal places to generate Python functions of computed formulas
 fd.compute(2, [-3, -2, 1, 2, 7])       # find formula for f''(x[i]) using points x[i+j], j = -3, -2, 1, 2, and 7
 fd.compute(1,range(-230, 231))         # find "461"-point central formula for f'(x[i]). does it exist? run the code!
 fd.formula()                           # generate and print the formula computed last time you called compute(...)
