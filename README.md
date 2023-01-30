@@ -30,7 +30,7 @@ In Python REPL, execute the following two commands in order.
 1. import Pkg ???? to be changed
 1. Pkg.add("FiniteDifferenceFormula")
 
-## The package exports a class, ```FiniteDifferenceFormula```, ```fd``` (an object of this class), and the following functions
+## The package exports a class, ```FiniteDifferenceFormula```, ```fd``` (an object of this class), and the following member functions
 
 ```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```,
 ```findbackward```, ```findforward```, ```formula```, ```printtaylor```,
