@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "fractions.Fraction"
+  "fractions.Fraction",
   "math"
 ]
 
