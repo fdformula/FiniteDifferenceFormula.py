@@ -14,7 +14,7 @@ rounding errors affect a result.
 
 Beware, though formulas are mathematically correct, they may not be numerically useful.
 This is true especially when we derive formulas for a derivative of higher order. For
-example, run compute(9,-5:5), provided by this package, to generate a 10-point
+example, run compute(9,range(-5, 6)), provided by this package, to generate a 10-point
 central formula for the 9-th derivative. The formula is mathematically correct, but it
 can hardly be put into use for numerical computing without, if possible, rewriting it
 in a special way. Similarly, the more points are used, the more precise a formula
