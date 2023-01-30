@@ -25,10 +25,9 @@ wonderful and amazing computing platform.
 
 ## How to install the package
 
-In Python REPL, execute the following two commands in order.
+In OS termial, execute the following command.
 
-1. import Pkg ???? to be changed
-1. Pkg.add("FiniteDifferenceFormula")
+1. python -m pip install FiniteDifferenceFormula
 
 ## The package exports a class, ```FiniteDifferenceFormula```, ```fd``` (an object of this class), and the following member functions
 
