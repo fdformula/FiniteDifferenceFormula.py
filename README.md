@@ -121,8 +121,7 @@ fd.fde(sin, 0:0.01:pi, 3, 0.01)
 Below is the output of activatepythonfunction(). It gives us the first chance to examine the usability
 of the computed or tested formula.
 
-```Julia
-import FiniteDifferenceFormula as fd
+```Python
 f, x, i, h = sin, 0:0.01:10, 501, 0.01
 fd.fde(f, x, i, h)   # result: 0.2836574577837647, relative error = 0.00166666%
 fd.fde1(f, x, i, h)  # result: 0.2836574577837647, relative error = 0.00166666%
@@ -142,7 +141,6 @@ combination of f(x[i+j]), where j ∈ points. In general, m is the coefficient o
 denominator of a formula. For example,
 
 ```Python
-import FiniteDifferenceFormula as fd
 fd.activatepythonfunction(2, [-1 0 2 3 6], [12 21 2 -3 -9], -12)
 fd.truncationerror()
 fd.activatepythonfunction(4, 0:4, [2//5 -8//5 12//5 -8//3 2//5], 5)
