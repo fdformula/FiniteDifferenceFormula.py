@@ -1,11 +1,11 @@
 # FiniteDifferenceFormula
 
-Ported from https://github.com/Winux2k/FiniteDifferenceFormula.jl, this Python package
-provides a general finite difference formula generator and a tool for teaching/learning
-the finite difference method. It generates finite difference formulas for derivatives
-of various orders by using Taylor series expansions of a function at evenly spaced points.
-It also gives the truncation error of a formula in the big-O notation. We can use it to
-generate new formulas in addition to verification of known ones.
+Ported from a Julia package, https://github.com/Winux2k/FiniteDifferenceFormula.jl, this
+Python package provides a general finite difference formula generator and a tool for
+teaching/learning the finite difference method. It generates finite difference formulas
+for derivatives of various orders by using Taylor series expansions of a function at evenly
+spaced points. It also gives the truncation error of a formula in the big-O notation. We
+can use it to generate new formulas in addition to verification of known ones.
 
 We may play with this package when teaching/learning numerical computing, especially
 the finite difference method, and explore the distribution, symmetry, and beauty in
@@ -32,7 +32,7 @@ In Python REPL, execute the following two commands in order.
 
 ## The package exports the following functions
 
-```activatejuliafunction```, ```compute```, ```decimalplaces```, ```find```,
+```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```,
 ```findbackward```, ```findforward```, ```formula```, ```printtaylor```,
 ```taylor```, ```truncationerror```, ```verifyformula```
 
@@ -107,7 +107,7 @@ Call this function to activate the Python function(s) for the newly computed fin
 difference formula. For example, after compute(1, [-1, 0, 1]) and decimalplaces(4), it activates the
 following Python functions.
 
-```Julia
+```Python
 fde(f, x, i, h)  = ( -f(x[i-1]) + f(x[i+1]) ) / (2 * h)             # i.e., f1stderiv2ptcentrale
 fde1(f, x, i, h) = ( -1/2 * f(x[i-1]) + 1/2 * f(x[i+1]) ) / h       # i.e., f1stderiv2ptcentrale1
 fdd(f, x, i, h)  = ( -0.5000 * f(x[i-1]) + 0.5000 * f(x[i+1]) ) / h # i.e., f1stderiv2ptcentrald
