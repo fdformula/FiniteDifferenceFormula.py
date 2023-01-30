@@ -27,7 +27,7 @@ wonderful and amazing computing platform.
 
 In OS termial, execute the following command.
 
-- python -m pip install FiniteDifferenceFormula
+- python3 -m pip install FiniteDifferenceFormula
 
 ## The package exports a class, ```FiniteDifferenceFormula```, ```fd``` (an object of this class), and the following member functions
 
