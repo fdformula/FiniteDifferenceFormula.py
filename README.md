@@ -73,15 +73,15 @@ term of the Taylor series of the linear combination is f^(n)(x[i]):
 k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ... + k[L]*f(x[i+points[L]]) = m*f^(n)(x[i]) + ..., m > 0
 ```
 
-where L = len(points). It is this equation that gives the formula for computing f^(n)(x[i])
+where L = len(points) - 1. It is this equation that gives the formula for computing f^(n)(x[i])
 and the truncation error in the big-O notation as well.
 
 ### function ```formula()```
 
 The function generates and lists
 
-1. k[1]\*f(x[i+points[1]]) + k[2]\*f(x[i+points[2]]) + ... + k[len]\*f(x[i+points[len]])
-= m\*f^(n)(x[i]) + ..., m > 0
+1. k[0]\*f(x[i+points[0]]) + k[1]\*f(x[i+points[1]]) + ... + k[L]\*f(x[i+points[L]])
+= m\*f^(n)(x[i]) + ..., where m > 0, L = length(points) - 1
 
 1. The formula for f^(n)(x[i]), including estimation of accuracy in the big-O notation.
 
