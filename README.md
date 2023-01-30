@@ -104,7 +104,7 @@ See function activatepythonfunction().
 ### function ```activatepythonfunction()```
 
 Call this function to activate the Python function(s) for the newly computed finite
-difference formula. For example, after compute(1, [-1, 0, 1]), it activates the
+difference formula. For example, after compute(1, [-1, 0, 1]) and decimalplaces(4), it activates the
 following Python functions.
 
 ```Julia
