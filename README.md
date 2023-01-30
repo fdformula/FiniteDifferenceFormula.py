@@ -143,7 +143,6 @@ denominator of a formula. For example,
 ```Python
 fd.activatepythonfunction(2, [-1 0 2 3 6], [12 21 2 -3 -9], -12)
 fd.truncationerror()
-fd.activatepythonfunction(4, 0:4, [2//5 -8//5 12//5 -8//3 2//5], 5)
 fd.activatepythonfunction(4, [0, 1, 2, 3, 4], [2/5 -8/5 12/5 -8/3 2/5], 5)
 fd.activatepythonfunction(2, [-1 2 0 2 3 6], [1.257 21.16 2.01 -3.123 -9.5], -12)
 ```
