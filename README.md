@@ -179,6 +179,7 @@ fd.compute(1,range(-230, 231))         # find "461"-point central formula for f'
 fd.formula()                           # generate and print the formula computed last time you called compute(...)
 fd.truncationerror()                   # print and return the truncation error of the newly computed formula
 fd.printtaylor(-2, 5)                  # print the first 5 terms of the Taylor series of f(x[i-2]) about x[i]
+fd.printtaylor(([-2,1], [3, -4]), 6)   # print the first 6 terms of the Taylor series of 3f(x[i-2]) - 4f(x[i+1])
 fd.activatepythonfunction()            # activate Julia function(s) of the newly computed formula in present REPL session
 fd.verifyformula(1, [2,3], [-4, 5], 6) # verify if f'(x[i]) = (-4f(x[i+2] + 5f(x[i+3)) / (6h) is a valid formula
 ```
