@@ -14,7 +14,6 @@
 # at https://github.com/Winux2k/FiniteDifferenceFormula.jl
 #-------------------------------------------------------------------------------
 from fractions import Fraction
-# from decimal import Decimal # lambda doesn't support
 from math import sin, cos, pi
 
 class _FDData:
@@ -32,7 +31,7 @@ class _FDData:
         self.coefs = coefs
 # end of class _FDData
 
-class FiniteDifferenceFormula:
+class FDFormula:
     _data : _FDData           = None   # share results between functions
     _computedq                = False  # make sure compute is called first
     _formula_status           = 0      # a formula may not be available
@@ -1340,12 +1339,9 @@ class FiniteDifferenceFormula:
         return
     # end of printtaylor
 
-# end of class FiniteDifferenceFormula:
+# end of class FDFormula:
 
-if __name__ == '__main__':
-    fd = FiniteDifferenceFormula()
-    print("Object fd is available. You may run commands like\n",
-          "fd.compute(2, range(-10,11))\n",
-          "fd.compute(1, [0, -1, -2, 3, 4, 7])\n",
-          "fd.activatepythonfunction()\n",
-          "fd.truncationerror()", sep = '')
+#if __name__ == '__main__':
+fd = FDFormula()
+
+
