@@ -1,3 +1,32 @@
+"""
+Ported from a Julia package, https://github.com/Winux2k/FiniteDifferenceFormula.jl, this Python package
+provides a general finite difference formula generator and a tool for teaching/learning the finite
+difference method. It generates finite difference formulas for derivatives of various orders by using
+Taylor series expansions of a function at evenly spaced points. It also gives the truncation error of
+a formula in the big-O notation. We can use it to generate new formulas in addition to verification of
+known ones.
+
+We may play with this package when teaching/learning numerical computing, especially the finite
+difference method, and explore the distribution, symmetry, and beauty in the coefficients of the
+formulas. By changing decimal places, we can also see how rounding errors affect a result.
+
+Beware, though formulas are mathematically correct, they may not be numerically useful. This is true
+especially when we derive formulas for a derivative of higher order. For example, run
+compute(9,range(-5, 6)), provided by this package, to generate a 10-point central formula for the
+9-th derivative. The formula is mathematically correct, but it can hardly be put into use for
+numerical computing without, if possible, rewriting it in a special way. Similarly, the more points
+are used, the more precise a formula is mathematically. However, due to rounding errors, this may
+not be true numerically.
+
+To run the code, you need the Python programming language (https://python.org/), a wonderful and
+amazing computing platform.
+
+The package exports a class, FDFormula, fd (an object of the class), and member functions,
+activatepythonfunction, compute, decimalplaces, find, findbackward, findforward, formula, printtaylor,
+taylor, truncationerror, verifyformula.
+
+See also https://github.com/Winux2k/FiniteDifferenceFormula.py/blob/main/README.md
+"""
 #-------------------------------------------------------------------------------
 # Name:        FiniteDifferenceFormula
 #
@@ -14,7 +43,7 @@
 # at https://github.com/Winux2k/FiniteDifferenceFormula.jl
 #-------------------------------------------------------------------------------
 from fractions import Fraction
-from math import sin, cos, pi
+import math
 
 class _FDData:
     n      : int
@@ -32,13 +61,13 @@ class _FDData:
 # end of class _FDData
 
 class FDFormula:
-    _data : _FDData           = None   # share results between functions
-    _computedq                = False  # make sure compute is called first
-    _formula_status           = 0      # a formula may not be available
-                                       # values? see _test_formula_validity()
+    _data : _FDData           = None  # share results between functions
+    _computedq                = False # make sure compute is called first
+    _formula_status           = 0     # a formula may not be available
+                                      # values? see _test_formula_validity()
 
-    _decimal_places : int = 16    # use it to print Python function for a formula
-                                  # call decimalplaces(n) to reset it
+    _decimal_places : int     = 16    # use it to print Python function for a formula
+                                      # call decimalplaces(n) to reset it
 
     # a vector of the coefficients of Taylor series of the linear combination:
     # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
@@ -61,12 +90,8 @@ class FDFormula:
     fdd                       = None
 
     # environment for experiments
-    f                        = sin
-    x                        = [ 0.01 * i for i in range(0, 1001) ]
-    h                        = 0.01
-
-    def __init__(self):
-        pass
+    _x                        = [ 0.01 * i for i in range(0, 1001) ]
+    _h                        = 0.01
 
     # This function returns the first 'max_num_of_terms' terms of Taylor series of
     # f(x[i+1]) centered at x=x[i] in a column vector with f(x[i]), f'(x[i]), ...,
@@ -93,27 +118,26 @@ class FDFormula:
     # for future coders/maintainers of this package:
     # to compute a new formula, this function must be called first.
     def _initialization(self):
-        self._data                    = None
-        self._computedq               = False
-        self._formula_status          = 0
-        self._lcombination_coefs      = None
+        self._data                     = None
+        self._computedq                = False
+        self._formula_status           = 0
+        self._lcombination_coefs       = None
 
-        self._range_inputq            = False
-        self._range_input             = None
+        self._range_inputq             = False
+        self._range_input              = None
 
         self._python_exact_func_expr   = ""
         self._python_exact_func_expr1  = ""
         self._python_decimal_func_expr = ""
         self._python_func_basename     = ""
 
-        self._bigO                    = ""
-        self._bigO_exp                = -1
+        self._bigO                     = ""
+        self._bigO_exp                 = -1
 
-        self.fde                      = None
-        self.fde1                     = None
-        self.fdd                      = None
+        self.fde                       = None
+        self.fde1                      = None
+        self.fdd                       = None
 
-        self.f                        = sin
     # end of _initialization
 
     # convert a coefficient to a readable string
@@ -226,61 +250,54 @@ class FDFormula:
         return points
     # end of _validate_input
 
-    """
-    ```compute(n, points, printformulaq = False)```
-
-    Compute a formula for the nth order derivative using the given points.
-    ```
-                n: the n-th order derivative to be found
-           points: in the format of a range(start, stop) or a list
-    printformulaq: print the computed formula or not
-    ```
-    |  points     |   The points/nodes to be used             |
-    | ----------- | ----------------------------------------- |
-    | range(0:3)  |   x[i], x[i+1], x[i+2]                    |
-    | range(-2:1) |   x[i-2], x[i-1], x[i]                    |
-    | range(-2:3) |   x[i-2], x[i-1], x[i], x[i+1], x[i+2]    |
-    | [1, 1, -1]  |   x[i-1], x[i+1]                          |
-
-    A list will be rearranged so that elements are ordered from lowest to
-    highest with duplicate ones removed.
-
-    Examples
-    ====
-
-    ```
-    fd.compute(2, [0, 1, 2, 3])
-    fd.compute(2, range(0, 4))
-    fd.compute(3, [-5, -2, 1, 2, 4], True)
-    ```
-    """
     def compute(self, n, points, printformulaq = False):
+        """
+        Compute a formula for the nth order derivative using the given points.
+
+                    n: the n-th order derivative to be found
+               points: in the format of a range(start, stop) or a list
+        printformulaq: print the computed formula or not
+
+        |  points     |   The points/nodes to be used             |
+        | ----------- | ----------------------------------------- |
+        | range(0:3)  |   x[i], x[i+1], x[i+2]                    |
+        | range(-2:1) |   x[i-2], x[i-1], x[i]                    |
+        | range(-2:3) |   x[i-2], x[i-1], x[i], x[i+1], x[i+2]    |
+        | [1, 1, -1]  |   x[i-1], x[i+1]                          |
+
+        A list will be rearranged so that elements are ordered from lowest to
+        highest with duplicate ones removed.
+
+        Examples
+        ========
+
+        fd.compute(2, [0, 1, 2, 3])
+        fd.compute(2, range(0, 4))
+        fd.compute(3, [-5, -2, 1, 2, 4], True)
+        """
         points = self._validate_input(n, points, printformulaq)
         if points == []:
             return
         return self._compute(n, points, printformulaq)
     # end of compute
 
-    """
-    ```function find(n, points, printformulaq = False)```
-
-    Compute a formula for the nth order derivative using the given points.
-
-    For the input, ```n``` and ```points``` (See [```compute```]), there may not
-    be formulas which use the two end points like -2 and 3 in -2 : 3 or [-2, -1,
-    0, 1, 2, 3]. In this case, ```find``` tries to find a formula by shrinking
-    the range to, first -1 : 3, then, -2 : 2, then -1 : 2, and so on, until a
-    formula is found or no formulas can be found at all.
-
-    See also [```compute```], [```findbackward```], and [```findforward```].
-
-    Examples
-    =====
-    ```
-    fd.find(2, range(-10, 10))
-    ```
-    """
     def find(self, n, points, printformulaq = False):
+        """
+        Compute a formula for the nth order derivative using the given points.
+
+        For the input, n and points (See [compute]), there may not
+        be formulas which use the two end points like -2 and 3 in -2 : 3 or [-2, -1,
+        0, 1, 2, 3]. In this case, find tries to find a formula by shrinking
+        the range to, first -1 : 3, then, -2 : 2, then -1 : 2, and so on, until a
+        formula is found or no formulas can be found at all.
+
+        See also [compute], [findbackward], and [findforward].
+
+        Examples
+        ========
+
+        fd.find(2, range(-10, 10))
+        """
         points = self._validate_input(n, points, printformulaq)
         if points == []:
             return
@@ -320,51 +337,45 @@ class FDFormula:
         return result
     # end of _findforward
 
-    """
-    ```function findforward(n, points, printformulaq = False)```
-
-    Compute a formula for the nth order derivative using the given points.
-
-    For the input, ```n``` and ```points``` (See [```compute```]), there may not
-    be formulas which use the two end points like -2 and 3 in -2 : 3 or [-2, -1,
-    0, 1, 2, 3]. In this case, ```findforward``` tries to find a formula by
-    shrinking the range from the left endpoint to, first -1 : 3, then, 0 : 3,
-    then 1 : 3, and so on, until a formula is found or no formulas can be found
-    at all.
-
-    See also [```compute```], [```find```], and [```findbackward```].
-
-    Examples
-    =====
-    ```
-    fd.findforward(2, range(-10, 10))
-    ```
-    """
     def findforward(self, n, points, printformulaq = False):
+        """
+        Compute a formula for the nth order derivative using the given points.
+
+        For the input, n and points (See [compute]), there may not
+        be formulas which use the two end points like -2 and 3 in -2 : 3 or [-2, -1,
+        0, 1, 2, 3]. In this case, findforward tries to find a formula by
+        shrinking the range from the left endpoint to, first -1 : 3, then, 0 : 3,
+        then 1 : 3, and so on, until a formula is found or no formulas can be found
+        at all.
+
+        See also [compute], [find], and [findbackward].
+
+        Examples
+        ========
+
+        fd.findforward(2, range(-10, 10))
+        """
         return self._findforward(n, points, printformulaq, True)
 
-    """
-    ```function findbackward(n, points, printformulaq = False)```
-
-    Compute a formula for the nth order derivative using the given points.
-
-    For the input, ```n``` and ```points``` (See [```compute```]), there may not
-    be formulas which use the two end points like -2 and 3 in -2 : 3 or [-2, -1,
-    0, 1, 2, 3]. In this case, ```findbackward``` tries to find a formula by
-    shrinking the range from the right endpoint to, first -2 : 2, then, -2 : 1,
-    then -2 : 0, and so on, until a formula is found or no formulas can be found
-    at all.
-
-    See also [```compute```], [```find```], and [```findforward```].
-
-    Examples
-    =====
-    ```
-    fd.compute(3,range(-100, 51))
-    fd.findbackward(3,range(-99, 51))
-    ```
-    """
     def findbackward(self, n, points, printformulaq = False):
+        """
+        Compute a formula for the nth order derivative using the given points.
+
+        For the input, n and points (See [compute]), there may not
+        be formulas which use the two end points like -2 and 3 in -2 : 3 or [-2, -1,
+        0, 1, 2, 3]. In this case, findbackward tries to find a formula by
+        shrinking the range from the right endpoint to, first -2 : 2, then, -2 : 1,
+        then -2 : 0, and so on, until a formula is found or no formulas can be found
+        at all.
+
+        See also [compute], [find], and [findforward].
+
+        Examples
+        ========
+
+        fd.compute(3,range(-100, 51))
+        fd.findbackward(3,range(-99, 51))
+        """
         return self._findforward(n, points, printformulaq, False)
 
     #
@@ -826,27 +837,25 @@ class FDFormula:
     # using data stored in global variable _data
     #
     # No valid formula can be found? Still dump the computing result for teaching.
-    """
-    ```formula()```
-
-    Generate and list:
-
-    1. ```k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-           = m*f^(n)(x[i]) + ..., m > 0```
-
-    1. The formula for f^(n)(x[i]), including estimation of accuracy in the
-       big-O notation.
-
-    1. "Python" function(s) for f^(n)(x[i]).
-
-    Calling ```compute(n, points, True)``` is the same as calling
-    ```compute(n, points)``` and then ```formula()```.
-
-    Even if no formula can be found, it still lists the computing results from
-    which we can see why. For example, after ```compute(2,1:2)```, try
-    ```formula()```.
-    """
     def formula(self):
+        """
+        Generate and list:
+
+        1. k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
+               = m*f^(n)(x[i]) + ..., m > 0
+
+        1. The formula for f^(n)(x[i]), including estimation of accuracy in the
+           big-O notation.
+
+        1. "Python" function(s) for f^(n)(x[i]).
+
+        Calling compute(n, points, True) is the same as calling
+        compute(n, points) and then formula().
+
+        Even if no formula can be found, it still lists the computing results from
+        which we can see why. For example, after compute(2,1:2), try
+        formula().
+        """
         if not self._computedq:
             print("Please call 'compute', 'find', 'findbackward', or"
                   "'findforward' first!")
@@ -907,21 +916,18 @@ class FDFormula:
     # output:
     #    (-1, "")      - There is no valid formula
     #    (n, "O(h^n)") - There is a valid formula
-    """
-    ```truncationerror()```
-
-    Show the truncation error of the last computed formula in the big_O notation.
-
-    Examples
-    ====
-    ```
-    fd.compute(2,range(-3, 4))
-    fd.truncationerror()
-    fd.find(3,[-2, 1, 2, 5, 7, 15])
-    fd.truncationerror()
-    ```
-    """
     def truncationerror(self):
+        """
+        Show the truncation error of the last computed formula in the big_O notation.
+
+        Examples
+        ========
+
+        fd.compute(2,range(-3, 4))
+        fd.truncationerror()
+        fd.find(3,[-2, 1, 2, 5, 7, 15])
+        fd.truncationerror()
+        """
         if self._computedq:
             if self._formula_status <= -100:
                 print("No valid formula is available.")
@@ -936,23 +942,20 @@ class FDFormula:
     ###################### for teaching/learning/exploring #####################
 
     # show current decimal places
-    """
-    ```decimalplaces()``` or ```decimalplaces(n)```
-
-    Set to n the decimal places for generating Python function(s) of computed
-    formulas. Note: pass a negative integer to show the present decimal places.
-
-    Examples
-    ====
-    ```
-    fd.compute(2,range(-3, 4))
-    fd.formula()  # by default, use 16 decimal places to generate a Python function
-    fd.decimalplaces(4)
-    fd.formula()  # now, use 4 decimal places to generate a Python function
-    ```
-    """
     # set decimal places to n
     def decimalplaces(self, n = 16):
+        """
+        Set to n the decimal places for generating Python function(s) of computed
+        formulas. Note: pass a negative integer to show the present decimal places.
+
+        Examples
+        ========
+
+        fd.compute(2,range(-3, 4))
+        fd.formula()  # by default, use 16 decimal places to generate a Python function
+        fd.decimalplaces(4)
+        fd.formula()  # now, use 4 decimal places to generate a Python function
+        """
         if isinstance(n, int) and n > 0:
             self._decimal_places = n
             if self._computedq:
@@ -980,29 +983,24 @@ class FDFormula:
     # if you have data from textbooks or other sources, you may use this function
     # to verify if it is right, activate related Python function(s), evaluate and
     # see the computiong results.
-    """
-    ```verifyformula(n, points, k, m = 1)``` or
-    ```activatepythonfunction(n, points, k, m = 1)```
 
-    Verify if a formula is valid. If it is valid, generate and activate its Python
-    function(s). If not, try to find a formula for the derivative using the points.
-
-    ```
-         n: the n-th order derivative
-    points: in the format of a range, start : stop, or a vector
-         k: a list of the coefficients in a formula
-         m: the coefficient in the denominator of a formula
-    ```
-
-    Examples
-    ====
-    ```Python
-    fd.verifyformula(1,[-1,2],[-3,4],5)  # f'(x[i]) = (-3f(x[i-1])+4f(x[i+2]))/(5h)?
-    fd.verifyformula(2, range(-3, 4), [2,-27,270,-490,270,-27,2], 18)
-    fd.verifyformula(2, range(-3, 4), [1/90,-3/20,3/2,-49/18,3/2,-3/20,1/90])
-    ```
-    """
     def verifyformula(self, n, points, k, m = 1):
+        """
+        Verify if a formula is valid. If it is valid, generate and activate its Python
+        function(s). If not, try to find a formula for the derivative using the points.
+
+             n: the n-th order derivative
+        points: in the format of a range, start : stop, or a vector
+             k: a list of the coefficients in a formula
+             m: the coefficient in the denominator of a formula
+
+        Examples
+        ========
+
+        fd.verifyformula(1,[-1,2],[-3,4],5)  # f'(x[i]) = (-3f(x[i-1])+4f(x[i+2]))/(5h)?
+        fd.verifyformula(2, range(-3, 4), [2,-27,270,-490,270,-27,2], 18)
+        fd.verifyformula(2, range(-3, 4), [1/90,-3/20,3/2,-49/18,3/2,-3/20,1/90])
+        """
         if (not isinstance(n, int)) or n <= 0:
             print("Error: invalid first argument, ", n, ". A positive ",
                   "integer is expected.", sep = '')
@@ -1158,7 +1156,7 @@ class FDFormula:
     # end of verifyformula
 
     def _printexampleresult(self, suffix, exact):
-        apprx = eval("self.fd" + suffix + "(sin, self.x, 501, self.h)")
+        apprx = eval("self.fd" + suffix + "(math.sin, self._x, 501, self._h)")
         relerr = abs((apprx - exact) / exact) * 100
         spaces = ""
         if suffix != "e1":
@@ -1171,6 +1169,10 @@ class FDFormula:
     # activate function(s) for the newly computed finite difference formula,
     # allowing immediate evaluation of the formula in Python REPL
     def activatepythonfunction(self, external_dataq = False):
+        """
+        activate function(s) for the newly computed finite difference formula,
+        allowing immediate evaluation of the formula in current Python REPL.
+        """
         if not (external_dataq or self._computedq):
             print("Please call 'compute', 'find', 'findbackward', or ",
                   "'findforward' first!")
@@ -1208,8 +1210,7 @@ class FDFormula:
             print("fd.fdd(f, x, i, h)   # ", self._python_func_basename, "d", sep = '')
 
         # sine is taken as the example b/c sin^(n)(x) = sin(n π/2 + x), simply
-        from math import sin, pi
-        exact = sin(self._data.n * pi /2 + 5) # x[501] = 5
+        exact = math.sin(self._data.n * math.pi /2 + 5) # x[501] = 5
 
         print("\nFor the", self._python_func_basename,
               "formula the computing results is as follows.")
@@ -1232,20 +1233,17 @@ class FDFormula:
 
     # calculate the coefficients of Taylor series of f(x[i + j]) about x[i]
     # for teaching/learning!
-    """
-    ```taylor(j, n = 10))```
-
-    Compute and return coefficients of the first n terms of the Taylor series of
-    f(x[i + j]) = f(x[i] + jh) about x[i], where h is the increment in x.
-
-    Examples
-    ====
-    ```
-    fd.taylor(-2)
-    fd.taylor(5)
-    ```
-    """
     def taylor(self, j, n = 10):
+        """
+        Compute and return coefficients of the first n terms of the Taylor series of
+        f(x[i + j]) = f(x[i] + jh) about x[i], where h is the increment in x.
+
+        Examples
+        ========
+
+        fd.taylor(-2)
+        fd.taylor(5)
+        """
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
             return
@@ -1259,28 +1257,6 @@ class FDFormula:
 
     # print readable Taylor series expansion of f(x[i + j]) about x[i]
     # for teaching/learning!
-    """
-    ```printtaylor(j, n = 10)```, ```printtaylor(coefs, n = 10)```, or
-    ```printtaylor(points, k, n::Int = 10)```
-
-    Display the first n terms of the Taylor series of f(x[i+j]) or the first n
-    nonzero terms of a Taylor series of which the coefficients are
-    provided in the list ```coefs``` (or through ```points``` and
-    ```k[:]``` as in the linear combination ```k[1]*f(x[i+points[1]]) +
-    k[2]*f(x[i+points[2]]) + ...)```). The latter provides also another way to
-    verify if a formula is mathematically valid or not.
-
-    See also [```verifyformula```], [```activatepythonfunction```], and
-    [```taylor```].
-
-    Examples
-    ====
-    ```
-    coefs = [2,-27,270,-490,270,-27,2]
-    fd.printtaylor(coefs, 6)
-    fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
-    ```
-    """
     def _printtaylor1(self, j, n = 10):
         coefs = self.taylor(j, n)
         js = ""
@@ -1306,6 +1282,27 @@ class FDFormula:
     # input: points_k is a tuple (points, k[:]), points and k are as in the
     # linear combination: k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
     def printtaylor(self, points_k, n = 10):
+        """
+        printtaylor(j, n = 10), printtaylor(coefs, n = 10), or
+        printtaylor((points, k), n = 10)
+
+        Display the first n terms of the Taylor series of f(x[i+j]) or the first n
+        nonzero terms of a Taylor series of which the coefficients are
+        provided in the list coefs (or through points and
+        k[:] as in the linear combination k[1]*f(x[i+points[1]]) +
+        k[2]*f(x[i+points[2]]) + ...)). The latter provides also another way to
+        verify if a formula is mathematically valid or not.
+
+        See also [verifyformula], [activatepythonfunction], and
+        [taylor].
+
+        Examples
+        ========
+
+        coefs = [2,-27,270,-490,270,-27,2]
+        fd.printtaylor(coefs, 6)
+        fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
+        """
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
             return
@@ -1343,5 +1340,3 @@ class FDFormula:
 
 #if __name__ == '__main__':
 fd = FDFormula()
-
-
