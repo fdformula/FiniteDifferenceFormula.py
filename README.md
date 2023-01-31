@@ -29,7 +29,7 @@ In OS termial, execute the following command.
 
 - python3 -m pip install FiniteDifferenceFormula
 
-## The package exports a class, ```FiniteDifferenceFormula```, ```fd``` (an object of this class), and the following member functions
+## The package exports a class, ```FDFormula```, ```fd``` (an object of the class), and the following member functions
 
 ```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```,
 ```findbackward```, ```findforward```, ```formula```, ```printtaylor```,

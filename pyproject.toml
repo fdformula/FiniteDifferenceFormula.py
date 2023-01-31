@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "FiniteDifferenceFormula"
-version = "0.8.1"
+version = "0.5.7"
 authors = [
   { name="David Wang", email="dwang@liberty.edu" },
 ]
@@ -21,8 +21,8 @@ classifiers = [
 ]
 
 dependencies = [
-  "fractions.Fraction",
-  "math"
+#  "fractions.Fraction",
+#  "math"
 ]
 
 keywords = ["finite difference", "formula", "coefficients", "generator", "calculator"] 
