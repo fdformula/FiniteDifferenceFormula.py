@@ -66,7 +66,7 @@ by using fewer points in different ways. (See the docstring of each function.)
 
 The algorithm uses the linear combination of f(x[i+j]) = f(x[i] + jh), where h is the increment
 in x and j ∈ points, to eliminate f(x[i]), f'(x[i]), f''(x[i]), ..., so that the first nonzero
-term of the Taylor series of the linear combination is f^(n)(x[i]):
+term of the Taylor series of the linear combination is f^(n)(x[i]).
 
 ```Python
 k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ... + k[L]*f(x[i+points[L]]) = m*f^(n)(x[i]) + ..., m > 0
