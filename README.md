@@ -168,6 +168,7 @@ of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), 
 ## Examples
 
 ```Python
+from FiniteDifferenceFormula import fd
 fd.compute(1, range(0,3), true)        # find, generate, and print "3"-point forward formula for f'(x[i])
 fd.compute(2, range(-3,1), true)       # find, generate, and print "4"-point backward formula for f''(x[i])
 fd.compute(3, range(-9,10))            # find "19"-point central formula for f'''(x[i])
