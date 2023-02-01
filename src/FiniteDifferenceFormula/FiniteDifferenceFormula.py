@@ -680,7 +680,7 @@ class FDFormula:
                       " != 0, i.e., ", fnxi, " can't be eliminated as indicated ",
                         "in the following computing result:", sep = '')
                 print(self._dashline())
-                print(self._lcombination_expr(self._data), " =\n    ", end = '')
+                print(self._lcombination_expr(self._data), "=\n    ", end = '')
                 self._print_taylor(self._lcombination_coefs, 5)
                 print(self._dashline())
                 has_solutionq = False
@@ -715,7 +715,7 @@ class FDFormula:
             if length <= n:
                 print("***** Error: ", n, ", ", input_points, " : Invalid input. ",
                       "At least ", n + 1, " points are needed for the ",
-                      _nth(n), " derivative.", sep = '')
+                      self._nth(n), " derivative.", sep = '')
                 self._formula_status = -200
                 return m
             print("\n***** Error: ", n, ", ", input_points, " : can't find a ",
@@ -827,8 +827,10 @@ class FDFormula:
             ds = "'" * data.n
         else:
             ds = "^(%d)" % data.n
-        print("f", ds, "(x[i]) = ( ", self._lcombination_expr(data, False), sep = '')
-        print(" ) / ", self._denominator_expr(data), " + ", bigO, "\n", sep = '')
+        print("f", ds, "(x[i]) = ( ", self._lcombination_expr(data, False),
+              sep = '', end = '')
+        print(" ) / ", self._denominator_expr(data), " + ", bigO, "\n",
+              sep = '')
     # end of _print_bigo_formula
 
     # create and print readable formula and other computing results
@@ -874,13 +876,12 @@ class FDFormula:
         # print Taylor series expansion of the linear combination:
         # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
         print("Computing result:\n")
-        print(self._lcombination_expr(self._data), " =\n    ", end = '')
+        print(self._lcombination_expr(self._data), "=\n    ", end = '')
         self._print_taylor(self._lcombination_coefs, 5)
 
         if self._formula_status > 0:
             print("\nThe exact formula:\n")
             self._print_bigo_formula(self._data, self._bigO)
-            #data1 = _FDData # ???? removed?
             if self._data.m != 1:                 # print in another format
                 data1 = _FDData(self._data.n, self._data.points,
                                 list(map(lambda x: Fraction(x, self._data.m),
@@ -961,9 +962,9 @@ class FDFormula:
                       "the new decimal places.", sep = '')
             else:
                 print("You may start your work by calling 'compute', 'find',",
-                      "'findbackward', or 'findforward'.", sep = '')
+                      "'findbackward', or 'findforward'.")
         else:
-            print("decimalplaces(n): a positive integer is expected.", sep = '')
+            print("decimalplaces(n): a positive integer is expected.")
 
         return self._decimal_places
     # end of decimalplaces
