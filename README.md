@@ -171,8 +171,8 @@ of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), 
 
 ```Python
 from FiniteDifferenceFormula import fd
-fd.compute(1, range(0,3), true)        # find, generate, and print "3"-point forward formula for f'(x[i])
-fd.compute(2, range(-3,1), true)       # find, generate, and print "4"-point backward formula for f''(x[i])
+fd.compute(1, range(0,3), True)        # find, generate, and print "3"-point forward formula for f'(x[i])
+fd.compute(2, range(-3,1), True)       # find, generate, and print "4"-point backward formula for f''(x[i])
 fd.compute(3, range(-9,10))            # find "19"-point central formula for f'''(x[i])
 fd.decimalplaces(6)                    # use 6 decimal places to generate Python functions of computed formulas
 fd.compute(2, [-3, -2, 1, 2, 7])       # find formula for f''(x[i]) using points x[i+j], j = -3, -2, 1, 2, and 7
