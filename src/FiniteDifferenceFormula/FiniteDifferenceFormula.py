@@ -270,7 +270,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.compute(2, [0, 1, 2, 3])
         fd.compute(2, range(0, 4))
         fd.compute(3, [-5, -2, 1, 2, 4], True)
@@ -295,7 +294,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.find(2, range(-10, 10))
         """
         points = self._validate_input(n, points, printformulaq)
@@ -352,7 +350,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.findforward(2, range(-10, 10))
         """
         return self._findforward(n, points, printformulaq, True)
@@ -372,7 +369,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.compute(3,range(-100, 51))
         fd.findbackward(3,range(-99, 51))
         """
@@ -605,9 +601,11 @@ class FDFormula:
                 c2s = self._c2s(data.k[i], True, decimalq)
                 if c2s == "":
                     c2s = "1"
+                    times = "*"    #v0.6.0
                 elif c2s == "-":
                     c2s = "-1"
-                s += "float(" + c2s + ")"
+                    times = "*"    #v0.6.0
+                s += "float(" + c2s + ") "
             else:
                 s += self._c2s(data.k[i], firstq, decimalq)
             s += times + self._f2s(data.points[i])
@@ -784,11 +782,11 @@ class FDFormula:
     # print and return Python lambda expression for the newly computed formula
     def _lambda_expr(self, data:_FDData, decimalq = False):
         fexpr  = "lambda f, x, i, h: "
-        fexpr += "float( "
+        #fexpr += "float( "
         fexpr += "("    # convert the final result
         fexpr += self._lcombination_expr(data, decimalq, True)
         fexpr += " ) / " + self._denominator_expr(data, True)
-        fexpr += " )"
+        #fexpr += " )"
         return fexpr
     #end of _lambda_expr
 
@@ -922,7 +920,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.compute(2,range(-3, 4))
         fd.truncationerror()
         fd.find(3,[-2, 1, 2, 5, 7, 15])
@@ -950,7 +947,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.compute(2,range(-3, 4))
         fd.formula()  # by default, use 16 decimal places to generate a Python function
         fd.decimalplaces(4)
@@ -996,7 +992,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.verifyformula(1,[-1,2],[-3,4],5)  # f'(x[i]) = (-3f(x[i-1])+4f(x[i+2]))/(5h)?
         fd.verifyformula(2, range(-3, 4), [2,-27,270,-490,270,-27,2], 18)
         fd.verifyformula(2, range(-3, 4), [1/90,-3/20,3/2,-49/18,3/2,-3/20,1/90])
@@ -1240,7 +1235,6 @@ class FDFormula:
 
         Examples
         ========
-
         fd.taylor(-2)
         fd.taylor(5)
         """
@@ -1298,7 +1292,6 @@ class FDFormula:
 
         Examples
         ========
-
         coefs = [2,-27,270,-490,270,-27,2]
         fd.printtaylor(coefs, 6)
         fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
