@@ -123,7 +123,7 @@ Below is the output of activatepythonfunction(). It gives us the first chance to
 of the computed or tested formula.
 
 ```Python
-f, x, i, h = sin, 0:0.01:10, 501, 0.01
+f, x, i, h = sin, [ 0.01*i for i in range(0, 1000) ], 501, 0.01
 fd.fde(f, x, i, h)   # result: 0.2836574577837647, relative error = 0.00166666%
 fd.fde1(f, x, i, h)  # result: 0.2836574577837647, relative error = 0.00166666%
 fd.fdd(f, x, i, h)   # result: 0.2836574577837647, relative error = 0.00166666%
