@@ -115,7 +115,7 @@ The suffixes 'e' and 'd' stand for 'exact' and 'decimal', respectively. No suffi
 After activating the function(s), we can evaluate right away in the present Python REPL session. For example,
 
 ```Python
-fd.fde(sin, 0:0.01:pi, 3, 0.01)
+fd.fde(sin, [ 0.01*i for i in range(0, pi)], 3, 0.01)
 ```
 Below is the output of activatepythonfunction(). It gives us the first chance to examine the usability
 of the computed or tested formula.
