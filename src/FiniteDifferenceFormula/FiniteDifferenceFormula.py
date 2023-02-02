@@ -548,6 +548,56 @@ class FDFormula:
             return None
     # end of _compute
 
+    def loadcomputingresults(self, results):
+        """
+        Input: 'results' is a tuple, (n, points, k[:], m). See compute(...).
+
+        Load computing results from the output of compute(...). After this
+        command, formula(), activatepythonfunction(), truncationerror(0, etc.,
+        are available. It allows users to work on saved computing results (say,
+        in a textfile). For example, when it takes hours to compute/find a
+        formula, users may run commands like the following one from OS terminal
+
+        python -c "from FiniteDifferenceFormula import fd;print(fd.compute(1,range(-200,201)))" > data.txt
+
+        and then mannually load data from data.txt to this function later.
+        """
+        if type(results) != tuple or len(results) != 4:
+            print("Invalid input. A tuple of the form (n, points, k, m) is expected.")
+            return
+
+        self._initialization()
+        n, points, k, m, = results
+        points = list(points)
+        self._format_of_points(points)
+        k = list(map(lambda x: Fraction(x, 1), k))
+
+        length = len(points)
+        max_num_of_terms = max(length, n) + 8
+
+        # setup the coefficients of Taylor series expansions of f(x) at each of
+        # the involved points
+        self._lcombination_coefs = [Fraction(0,1)] * max_num_of_terms
+        coefs = [Fraction(0,1)] * max_num_of_terms
+        for i in range(length):
+            coefs[i] = self._taylor_coefs(points[i], max_num_of_terms)
+
+        # Taylor series of the linear combination
+        # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
+        for i in range(length):
+            if k[i] == 0:
+                continue
+            ##_lcombination_coefs += k[i] * coefs[i]
+            for j in range(max_num_of_terms):
+                self._lcombination_coefs[j] += k[i] * coefs[i][j]
+
+        self._data = _FDData(n, points, k, m, coefs)
+        self._computedq = True
+
+        self._test_formula_validity()
+        return
+    # end of loadcomputingresults
+
     # input: A, n x (n + 1) "matrix" of Fraction numbers
     # output: a "matrix" in reduced row echelon form
     #
@@ -658,14 +708,14 @@ class FDFormula:
         if self._range_inputq:
             input_points = self._range_input
         else:
-            input_points = points  # transpose ' ???
+            input_points = points
 
         # Is there any equation in system (2) that is not satisfied?
         has_solutionq = True
         self._formula_status = 0
         for i in range(n):
             if self._lcombination_coefs[i] != 0:
-                x = round(self._lcombination_coefs[i])   # v1.1.7
+                x = round(self._lcombination_coefs[i])
                 if x != self._lcombination_coefs[i]:
                     x = float(self._lcombination_coefs[i])
                 if i <= 3:
