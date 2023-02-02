@@ -601,10 +601,10 @@ class FDFormula:
                 c2s = self._c2s(data.k[i], True, decimalq)
                 if c2s == "":
                     c2s = "1"
-                    times = "*"    #v0.6.0
+                    times = "*"  #v0.6.0, Julia: -2x == -2*x; an error in Python
                 elif c2s == "-":
                     c2s = "-1"
-                    times = "*"    #v0.6.0
+                    times = "*"  #same as above
                 s += "float(" + c2s + ") "
             else:
                 s += self._c2s(data.k[i], firstq, decimalq)
@@ -1152,7 +1152,7 @@ class FDFormula:
     # end of verifyformula
 
     def _printexampleresult(self, suffix, exact):
-        apprx = eval("self.fd" + suffix + "(math.sin, self._x, 501, self._h)")
+        apprx = eval("self.fd" + suffix + "(math.sin, self._x, 500, self._h)")
         relerr = abs((apprx - exact) / exact) * 100
         spaces = ""
         if suffix != "e1":
@@ -1198,7 +1198,7 @@ class FDFormula:
                 "temporarily in the FiniteDifferenceFormula module.\n\n",
                 "Usage:\n=====", sep = '')
         print("from math import sin, cos, tan, pi, exp, log")
-        print("f, i, h = sin, 501, 0.01")
+        print("f, i, h = sin, 500, 0.01")
         print("x = [ 0.01 * i for i in range(0, 1001) ]")
         print("fd.fde(f, x, i, h)   # ", self._python_func_basename, "e", sep = '')
         if count ==3:
@@ -1206,10 +1206,10 @@ class FDFormula:
             print("fd.fdd(f, x, i, h)   # ", self._python_func_basename, "d", sep = '')
 
         # sine is taken as the example b/c sin^(n)(x) = sin(n π/2 + x), simply
-        exact = math.sin(self._data.n * math.pi /2 + 5) # x[501] = 5
+        exact = math.sin(self._data.n * math.pi /2 + 5) # x[500] = 5
 
         print("\nFor the", self._python_func_basename,
-              "formula the computing results is as follows.")
+              "formula the computing results are as follows.")
         self._printexampleresult("e", exact)
         if count == 3:
             self._printexampleresult("e1", exact)
@@ -1262,20 +1262,23 @@ class FDFormula:
         print("f(x[i", js, "]) = ", sep = '', end = '')
         self._print_taylor(coefs, n)
         return
-    # end of printtaylor
+    # end of _printtaylor1
 
     # print readable Taylor series of a function/expression about x[i]. e.g.,
     # fd.printtaylor(2*fd.taylor(0) - 5*fd.taylor(1) + 4*fd.taylor(2))
+    # sad. base Python doesn't provide this convenience. use numpy.
     def _printtaylor2(self, coefs, n = 10):
         self._print_taylor(coefs, n)
 
         return
-    # end of printtaylor
+    # end of _printtaylor1
 
-    # awkard implementation: Julia's multiple dispatchment is wonderful
+    # awkard implementation: Julia's multiple dispatchment is super...
     #
-    # input: points_k is a tuple (points, k[:]), points and k are as in the
-    # linear combination: k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
+    # input: points_k can be an integer, a list of coefficients of a Taylor
+    # series, or a tuple (points, k[:]), where points and k are as in the
+    # linear combination:
+    #     k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
     def printtaylor(self, points_k, n = 10):
         """
         printtaylor(j, n = 10), printtaylor(coefs, n = 10), or
@@ -1296,6 +1299,12 @@ class FDFormula:
         coefs = [2,-27,270,-490,270,-27,2]
         fd.printtaylor(coefs, 6)
         fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
+        
+        import numpy as np
+        n = 50
+        # -2f(x[i+1) + 3f(x[i+2]) -4f(x[i+5])
+        coefs = -2*np.array(fd.taylor(1,n)) + 3*np.array(fd.taylor(2,n)) - 4*np.array(fd.taylor(5,n))
+        fd.printtaylor(list(coefs),50)
         """
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
