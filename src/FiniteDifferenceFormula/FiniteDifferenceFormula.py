@@ -113,7 +113,7 @@ class FDFormula:
                 factorial *= n
             result[n] = (Fraction(1, factorial)) * (h ** n)
         return result  # a column vector
-        # _taylor_coefs
+    # end of _taylor_coefs
 
     # for future coders/maintainers of this package:
     # to compute a new formula, this function must be called first.
@@ -137,7 +137,6 @@ class FDFormula:
         self.fde                       = None
         self.fde1                      = None
         self.fdd                       = None
-
     # end of _initialization
 
     # convert a coefficient to a readable string
@@ -833,13 +832,10 @@ class FDFormula:
               sep = '')
     # end of _print_bigo_formula
 
-    # create and print readable formula and other computing results
-    # using data stored in global variable _data
-    #
-    # No valid formula can be found? Still dump the computing result for teaching.
     def formula(self):
         """
-        Generate and list:
+        Generate and display readable formula and other computing results,
+        including
 
         1. k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
                = m*f^(n)(x[i]) + ..., m > 0
@@ -852,8 +848,8 @@ class FDFormula:
         Calling compute(n, points, True) is the same as calling
         compute(n, points) and then formula().
 
-        Even if no formula can be found, it still lists the computing results from
-        which we can see why. For example, after compute(2,1:2), try
+        Even if no formula can be found, it still lists the computing results
+        from which we can see why. For example, after compute(2,1:2), try
         formula().
         """
         if not self._computedq:
@@ -910,14 +906,14 @@ class FDFormula:
         return
     # end of formula
 
-    # print _bigO, the estimation of truncation error in the big-O notation
-    #
-    # output:
-    #    (-1, "")      - There is no valid formula
-    #    (n, "O(h^n)") - There is a valid formula
     def truncationerror(self):
         """
-        Show the truncation error of the last computed formula in the big_O notation.
+        Show the truncation error of the last computed formula in the big_O
+        notation.
+
+        Output:
+           (-1, "")      - There is no valid formula
+           (n, "O(h^n)") - There is a valid formula
 
         Examples
         ========
@@ -939,8 +935,6 @@ class FDFormula:
 
     ###################### for teaching/learning/exploring #####################
 
-    # show current decimal places
-    # set decimal places to n
     def decimalplaces(self, n = 16):
         """
         Set to n the decimal places for generating Python function(s) of computed
@@ -976,10 +970,6 @@ class FDFormula:
             return self._range_input
         return points
     # end of _format_of_points
-
-    # if you have data from textbooks or other sources, you may use this function
-    # to verify if it is right, activate related Python function(s), evaluate and
-    # see the computiong results.
 
     def verifyformula(self, n, points, k, m = 1):
         """
@@ -1162,8 +1152,6 @@ class FDFormula:
               "relative error = ", "%.8f%%" % relerr, sep = '')
     # end of _printexampleresult
 
-    # activate function(s) for the newly computed finite difference formula,
-    # allowing immediate evaluation of the formula in Python REPL
     def activatepythonfunction(self, external_dataq = False):
         """
         Activate function(s) for the newly computed finite difference formula,
@@ -1227,8 +1215,6 @@ class FDFormula:
         return
     # end of activatepythonfunction
 
-    # calculate the coefficients of Taylor series of f(x[i + j]) about x[i]
-    # for teaching/learning!
     def taylor(self, j, n = 10):
         """
         Compute and return coefficients of the first n terms of the Taylor series of
@@ -1300,13 +1286,19 @@ class FDFormula:
         coefs = [2,-27,270,-490,270,-27,2]
         fd.printtaylor(coefs, 6)
         fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
-        
+
         import numpy as np
         n = 50
         # -2f(x[i+1) + 3f(x[i+2]) -4f(x[i+5])
         coefs  = -2 * np.array(fd.taylor(1, n)) + 3 * np.array(fd.taylor(2, n))
         coefs += -4 * np.array(fd.taylor(5, n))
         fd.printtaylor(list(coefs),50)
+
+        Note
+        ====
+        Julia's multiple dispatchment is super. We wish Python to 1) adopt it;
+        2) provide basic vectorization functionality with lists and tuples in its
+        very base, rather than through packages like numpy.
         """
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
