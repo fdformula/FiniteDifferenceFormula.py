@@ -32,8 +32,8 @@ In OS termial, execute the following command.
 ## The package exports a class, ```FDFormula```, ```fd``` (an object of the class), and the following member functions
 
 ```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```,
-```findbackward```, ```findforward```, ```formula```, ```printtaylor```,
-```taylor```, ```truncationerror```, ```verifyformula```
+```findbackward```, ```findforward```, ```formula```, ```loadcomputingresults```,
+```printtaylor```, ```taylor```, ```truncationerror```, ```verifyformula```
 
 ### functions, ```compute```, ```find```, ```findforward```, and ```findbackward```
 
