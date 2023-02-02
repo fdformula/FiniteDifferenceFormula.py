@@ -86,6 +86,13 @@ The function generates and lists
 
 1. "Python" function for f^(n)(x[i]).
 
+### function ```loadcomputingresults(results)```
+
+The function loads results, a tuple of the form (n, points, k, m), returned by ```compute```.
+For example, it may take hours to compute/find a formula invloving hundreds of points. In this
+case, we can save the results in a text file and come back later to work on the results
+with ```activatepythonfunction```, ```formula```, ```truncationerror```, and so on.
+
 ### function ```truncationerror()```
 
 The function returns a tuple, (n, "O(h^n)"), the truncation error of the newly computed finite
