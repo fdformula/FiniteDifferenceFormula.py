@@ -75,6 +75,13 @@ k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ... + k[L]*f(x[i+points[L]]) =
 where L = len(points) - 1. It is this equation that gives the formula for computing f^(n)(x[i])
 and the truncation error in the big-O notation as well.
 
+### function ```loadcomputingresults(results)```
+
+The function loads results, a tuple of the form (n, points, k, m), returned by ```compute```.
+For example, it may take hours to compute/find a formula invloving hundreds of points. In this
+case, we can save the results in a text file and come back later to work on the results
+with ```activatepythonfunction```, ```formula```, ```truncationerror```, and so on.
+
 ### function ```formula()```
 
 The function generates and lists
@@ -84,14 +91,7 @@ The function generates and lists
 
 1. The formula for f^(n)(x[i]), including estimation of accuracy in the big-O notation.
 
-1. "Python" function for f^(n)(x[i]).
-
-### function ```loadcomputingresults(results)```
-
-The function loads results, a tuple of the form (n, points, k, m), returned by ```compute```.
-For example, it may take hours to compute/find a formula invloving hundreds of points. In this
-case, we can save the results in a text file and come back later to work on the results
-with ```activatepythonfunction```, ```formula```, ```truncationerror```, and so on.
+1. "Python" function(s) for f^(n)(x[i]).
 
 ### function ```truncationerror()```
 
