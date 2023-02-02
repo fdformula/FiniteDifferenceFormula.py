@@ -27,7 +27,7 @@ wonderful and amazing computing platform.
 
 In OS termial, execute the following command.
 
-- python3 -m pip install FiniteDifferenceFormula
+- python -m pip install FiniteDifferenceFormula
 
 ## The package exports a class, ```FDFormula```, ```fd``` (an object of the class), and the following member functions
 
@@ -42,7 +42,7 @@ All take the same arguments (n, points, printformulaq = False).
 #### Input
 
 ```
-            n:  the n-th order derivative to be found
+            n: the n-th order derivative to be found
        points: in the format of range(start, stop) or a list
 printformulaq: print the computed formula or not
 ```
