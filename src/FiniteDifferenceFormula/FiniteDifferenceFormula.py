@@ -1166,8 +1166,8 @@ class FDFormula:
     # allowing immediate evaluation of the formula in Python REPL
     def activatepythonfunction(self, external_dataq = False):
         """
-        activate function(s) for the newly computed finite difference formula,
-        allowing immediate evaluation of the formula in current Python REPL.
+        Activate function(s) for the newly computed finite difference formula,
+        and allow immediate evaluation of the function(s) in current Python REPL.
         """
         if not (external_dataq or self._computedq):
             print("Please call 'compute', 'find', 'findbackward', or ",
@@ -1281,15 +1281,16 @@ class FDFormula:
     #     k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
     def printtaylor(self, points_k, n = 10):
         """
-        printtaylor(j, n = 10), printtaylor(coefs, n = 10), or
+        printtaylor(j, n = 10),
+        printtaylor(coefs, n = 10), or
         printtaylor((points, k), n = 10)
 
-        Display the first n terms of the Taylor series of f(x[i+j]) or the first n
-        nonzero terms of a Taylor series of which the coefficients are
-        provided in the list coefs (or through points and
-        k[:] as in the linear combination k[1]*f(x[i+points[1]]) +
-        k[2]*f(x[i+points[2]]) + ...)). The latter provides also another way to
-        verify if a formula is mathematically valid or not.
+        Display the first n terms of the Taylor series of f(x[i+j]) or the first
+        n nonzero terms of a Taylor series of which the coefficients are provided
+        in the list coefs (or through points and k[:] as in the linear
+        combination k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...). The
+        latter provides also another way to verify if a formula is mathematically
+        valid or not.
 
         See also [verifyformula], [activatepythonfunction], and
         [taylor].
@@ -1303,7 +1304,8 @@ class FDFormula:
         import numpy as np
         n = 50
         # -2f(x[i+1) + 3f(x[i+2]) -4f(x[i+5])
-        coefs = -2*np.array(fd.taylor(1,n)) + 3*np.array(fd.taylor(2,n)) - 4*np.array(fd.taylor(5,n))
+        coefs  = -2 * np.array(fd.taylor(1, n)) + 3 * np.array(fd.taylor(2, n))
+        coefs += -4 * np.array(fd.taylor(5, n))
         fd.printtaylor(list(coefs),50)
         """
         if n < 1:
