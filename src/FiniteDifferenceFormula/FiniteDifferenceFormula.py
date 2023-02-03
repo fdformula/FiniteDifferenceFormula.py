@@ -66,7 +66,8 @@ class FDFormula:
     _formula_status           = 0     # a formula may not be available
                                       # values? see _test_formula_validity()
 
-    _decimal_places : int     = 16    # use it to print Python function for a formula
+    _NUM_OF_EXTRA_TAYLOR_TERMS= 8     # for examining truncation error
+    _decimal_places : int     = 16    # for generating Python function(s)
                                       # call decimalplaces(n) to reset it
 
     # a vector of the coefficients of Taylor series of the linear combination:
@@ -419,7 +420,7 @@ class FDFormula:
         #
         # setup a linear system Ax = B first
         length = len(points)
-        max_num_of_terms = max(length, n) + 8
+        max_num_of_terms = max(length, n) + self._NUM_OF_EXTRA_TAYLOR_TERMS
         #
         # setup the coefficients of Taylor series expansions of f(x) at each of
         # the involved points
@@ -573,7 +574,7 @@ class FDFormula:
         k = list(map(lambda x: Fraction(x, 1), k))
 
         length = len(points)
-        max_num_of_terms = max(length, n) + 8
+        max_num_of_terms = max(length, n) + self._NUM_OF_EXTRA_TAYLOR_TERMS
 
         # setup the coefficients of Taylor series expansions of f(x) at each of
         # the involved points
@@ -1136,7 +1137,7 @@ class FDFormula:
 
         # setup the coefficients of Taylor series expansions of f(x) at each of
         # the involved points
-        max_num_of_terms = max(length, n) + 8
+        max_num_of_terms = max(length, n) + self._NUM_OF_EXTRA_TAYLOR_TERMS
         coefs = [None] * max_num_of_terms
         for i in range(length):
             coefs[i] = self._taylor_coefs(points[i], max_num_of_terms)
@@ -1375,10 +1376,11 @@ class FDFormula:
                  "not the same.")
            return
 
-        coefs = [0] * n
+        max_num_of_terms = max(n, length, 30) + self._NUM_OF_EXTRA_TAYLOR_TERMS
+        coefs = [0] * max_num_of_terms
         for i in range(length):
-            for j in range(n):
-                coefs[j] += k[i] * self._taylor_coefs(points[i], n)[j]
+            for j in range(max_num_of_terms):
+                coefs[j] += k[i] * self._taylor_coefs(points[i], max_num_of_terms)[j]
         self._print_taylor(coefs, n)
         return
     # end of printtaylor
