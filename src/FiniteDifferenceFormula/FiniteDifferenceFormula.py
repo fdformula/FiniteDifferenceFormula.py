@@ -1321,10 +1321,10 @@ class FDFormula:
         printtaylor()       # added in v0.6.4
           - Print the first few nonzero terms of the Taylor series of the linear
             combination k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... for
-            the newly computed formula
+            the newly computed formula (even if failed).
 
         printtaylor(j, n = 10)
-          - Print the 1st n terms of Taylor series of f(x[i+j])
+          - Print the 1st n terms of Taylor series of f(x[i+j]) about x[i].
 
         printtaylor(coefs, n = 10)
           - Print the 1st n terms of Taylor series with coefficients in 'coefs'
