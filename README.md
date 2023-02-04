@@ -162,7 +162,7 @@ about x[i].
 
 ### function ```printtaylor()```
 
-The function prints the first few terms of the Taylor series of the linear combination
+The function prints the first few nonzero terms of the Taylor series of the linear combination
 
 k[0]f(x[i+j0]) + k[1]f(x[i+j1]) + ... for the newly computed formula.
 
