@@ -1316,26 +1316,38 @@ class FDFormula:
     # series, or a tuple (points, k[:]), where points and k are as in the
     # linear combination:
     #     k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-    def printtaylor(self, points_k, n = 10):
+    def printtaylor(self, points_k = (), n = 10):
         """
-        printtaylor(j, n = 10),
-        printtaylor(coefs, n = 10), or
+        printtaylor()       # added in v0.6.4
+          - Print the first few nonzero terms of the Taylor series of the linear
+            combination k[0]f(x[i+j0]) + k[1]f(x[i+j1]) + ... for the newly
+            computed formula
+
+        printtaylor(j, n = 10)
+          - Print the 1st n terms of Taylor series of f(x[i+j])
+
+        printtaylor(coefs, n = 10)
+          - Print the 1st n terms of Taylor series with coefficients in 'coefs'
+
         printtaylor((points, k), n = 10)
+          - Prints the 1st n nonzero terms of the Taylor series of the linear
+            combination:  k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ...
 
-        Display the first n terms of the Taylor series of f(x[i+j]) or the first
-        n nonzero terms of a Taylor series of which the coefficients are provided
-        in the list coefs (or through points and k[:] as in the linear
-        combination k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...). The
-        latter provides also another way to verify if a formula is mathematically
-        valid or not.
+        The last two provide also another way to verify if a formula is
+        mathematically valid or not.
 
-        See also [verifyformula], [activatepythonfunction], and
-        [taylor].
+        See also [verifyformula], [activatepythonfunction], and [taylor].
 
         Examples
         ========
+        fd.compute(1, [0, 1, 5, 8])
+        fd.printtaylor()
+
+        fd.printtaylor(2)
+
         coefs = [2,-27,270,-490,270,-27,2]
         fd.printtaylor(coefs, 6)
+
         fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
 
         import numpy as np
@@ -1343,7 +1355,7 @@ class FDFormula:
         # -2f(x[i+1) + 3f(x[i+2]) -4f(x[i+5])
         coefs  = -2 * np.array(fd.taylor(1, n)) + 3 * np.array(fd.taylor(2, n))
         coefs += -4 * np.array(fd.taylor(5, n))
-        fd.printtaylor(list(coefs),50)
+        fd.printtaylor(list(coefs), n)
 
         Note
         ====
@@ -1354,17 +1366,30 @@ class FDFormula:
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
             return
+
         if isinstance(points_k, tuple):
-            if len(points_k) == 2:
+            if len(points_k) == 0:
+                # print the Taylor series of the linear combination of
+                # k[0]f(x[i+j0]) + k[1]f(x[i+j1]) + ... for the newly computed formula
+                if self._computedq:
+                    print(self._lcombination_expr(self._data), "=\n    ", end = '')
+                    self._print_taylor(self._lcombination_coefs, 5)
+                else:
+                    print("Please call 'compute', 'find', 'findbackward', or",
+                          "'findforward' first!")
+                return
+            elif len(points_k) == 2:
                 points, k = points_k
             else:
                 print("Invalid input, ", points_k, ". Two lists are expected ",
                       " in the tuple.", sep = '')
                 return
         elif isinstance(points_k, list):
-            return self._printtaylor2(points_k, n)
+            self._printtaylor2(points_k, n)
+            return
         else:
-            return self._printtaylor1(points_k, n)
+            self._printtaylor1(points_k, n)
+            return
 
         oldlen = len(points)
         points = sorted(set(points))
@@ -1372,9 +1397,9 @@ class FDFormula:
         if oldlen != length:
             print("Your input, points = ", points, ".", sep = '')
         if length != len(k):
-           print("Error: invalid input. The sizes of points and k are",
-                 "not the same.")
-           return
+            print("Error: invalid input. The sizes of points and k are",
+                  "not the same.")
+            return
 
         max_num_of_terms = max(n, length, 30) + self._NUM_OF_EXTRA_TAYLOR_TERMS
         coefs = [0] * max_num_of_terms
