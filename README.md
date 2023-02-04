@@ -163,7 +163,7 @@ about x[i].
 ### function ```printtaylor()```
 
 The function prints the first few nonzero terms of the Taylor series of the linear combination
-k[0] f(x[i+points[0]]) + k[1] f(x[i+points[1]]) + ... for the newly computed formula (even if failed).
+k[0] f(x[i+points[0]]) + k[1] f(x[i+points[1]]) + ... for the newly computed formula.
 
 ### function ```printtaylor(j, n = 10)```
 
