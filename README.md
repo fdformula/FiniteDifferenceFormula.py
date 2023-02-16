@@ -1,6 +1,6 @@
 # FiniteDifferenceFormula
 
-Ported from a Julia package, https://github.com/fdformula/FiniteDifferenceFormula.jl, this
+Ported from a Julia package, https://github.com/Winux2k/FiniteDifferenceFormula.jl, this
 Python package provides a general finite difference formula generator and a tool for
 teaching/learning the finite difference method. It generates finite difference formulas
 for derivatives of various orders by using Taylor series expansions of a function at evenly
@@ -31,8 +31,8 @@ In OS termial, execute the following command.
 
 ## The package exports a class, ```FDFormula```, ```fd``` (an object of the class), and the following member functions
 
-```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```,
-```findbackward```, ```findforward```, ```formula```, ```loadcomputingresults```,
+```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```, ```findbackward```,
+```findforward```, ```formula```, ```formulatable```, ```loadcomputingresults```,
 ```printtaylor```, ```taylor```, ```truncationerror```, ```verifyformula```
 
 ### functions, ```compute```, ```find```, ```findforward```, and ```findbackward```
@@ -160,11 +160,6 @@ fd.verifyformula(2, [-1, 2, 0, 2, 3, 6], [1.257, 21.16, 2.01, -3.123, -9.5], -12
 The function returns the coefficients of the first n terms of the Taylor series of f(x[i+j])
 about x[i].
 
-### function ```printtaylor()```
-
-The function prints the first few nonzero terms of the Taylor series of the linear combination
-k[0] f(x[i+points[0]]) + k[1] f(x[i+points[1]]) + ... for the newly computed formula.
-
 ### function ```printtaylor(j, n = 10)```
 
 The function prints the first n terms of the Taylor series of f(x[i+j]) about x[i].
@@ -178,6 +173,11 @@ provided.
 
 The function prints the first n nonzero terms of a Taylor series of which the linear combination
 of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), where L = len(points).
+
+### function ```formulatable(highest_order = 3, max_num_of_points = 5)```
+
+By default, the function prints all forward, backward, and central finite difference formulas for
+the 1st, 2nd, and 3rd derivatives, using at most 5 points.
 
 ## Examples
 
