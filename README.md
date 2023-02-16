@@ -8,9 +8,9 @@ spaced points. It also gives the truncation error of a formula in the big-O nota
 can use it to generate new formulas in addition to verification of known ones.
 
 We may play with this package when teaching/learning numerical computing, especially
-the finite difference method, and explore the distribution, symmetry, and beauty in
-the coefficients of the formulas. By changing decimal places, we can also see how
-rounding errors affect a result.
+the finite difference method, and explore the distribution and symmetry in the
+coefficients of the formulas. By changing decimal places, we can also see how rounding
+errors may affect a result.
 
 Beware, though formulas are mathematically correct, they may not be numerically useful.
 This is true especially when we derive formulas for a derivative of higher order. For
@@ -32,8 +32,8 @@ In OS termial, execute the following command.
 ## The package exports a class, ```FDFormula```, ```fd``` (an object of the class), and the following member functions
 
 ```activatepythonfunction```, ```compute```, ```decimalplaces```, ```find```, ```findbackward```,
-```findforward```, ```formula```, ```formulatable```, ```loadcomputingresults```,
-```printtaylor```, ```taylor```, ```truncationerror```, ```verifyformula```
+```findforward```, ```formula```, ```formulas```, ```loadcomputingresults```, ```taylor```,
+```taylorcoefs```, ```tcofs```, ```truncationerror```, ```verifyformula```
 
 ### functions, ```compute```, ```find```, ```findforward```, and ```findbackward```
 
@@ -155,26 +155,26 @@ fd.verifyformula(4, [0, 1, 2, 3, 4], [2/5, -8/5, 12/5, -8/3, 2/5], 5)
 fd.verifyformula(2, [-1, 2, 0, 2, 3, 6], [1.257, 21.16, 2.01, -3.123, -9.5], -12)
 ```
 
-### function ```taylor(j, n = 10)```
+### function ```taylorcoefs(j, n = 10)``` or ```tcoefs(j, n = 10)```
 
 The function returns the coefficients of the first n terms of the Taylor series of f(x[i+j])
 about x[i].
 
-### function ```printtaylor(j, n = 10)```
+### function ```taylor(j, n = 10)```
 
 The function prints the first n terms of the Taylor series of f(x[i+j]) about x[i].
 
-### function ```printtaylor(coefficients_of_taylor_series, n = 10)```
+### function ```taylor(coefficients_of_taylor_series, n = 10)```
 
 The function prints the first n nonzero terms of a Taylor series of which the coefficients are
 provided.
 
-### function ```printtaylor((points, k), n = 10)```
+### function ```taylor((points, k), n = 10)```
 
 The function prints the first n nonzero terms of a Taylor series of which the linear combination
 of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), where L = len(points).
 
-### function ```formulatable(highest_order = 3, max_num_of_points = 5)```
+### function ```formulas(highest_order = 3, max_num_of_points = 5)```
 
 By default, the function prints all forward, backward, and central finite difference formulas for
 the 1st, 2nd, and 3rd derivatives, using at most 5 points.
@@ -191,8 +191,9 @@ fd.compute(2, [-3, -2, 1, 2, 7])       # find formula for f''(x[i]) using points
 fd.compute(1,range(-230, 231))         # find "461"-point central formula for f'(x[i]). does it exist? run the code!
 fd.formula()                           # generate and print the formula computed last time you called compute(...)
 fd.truncationerror()                   # print and return the truncation error of the newly computed formula
-fd.printtaylor(-2, 5)                  # print the first 5 terms of the Taylor series of f(x[i-2]) about x[i]
-fd.printtaylor(([-2,1], [3, -4]), 6)   # print the first 6 terms of the Taylor series of 3f(x[i-2]) - 4f(x[i+1])
+fd.taylor(-2, 5)                       # print the first 5 terms of the Taylor series of f(x[i-2]) about x[i]
+fd.taylor(([-2,1], [3, -4]), 6)        # print the first 6 terms of the Taylor series of 3f(x[i-2]) - 4f(x[i+1])
 fd.activatepythonfunction()            # activate Python function(s) of the newly computed formula in present REPL session
 fd.verifyformula(1, [2,3], [-4, 5], 6) # verify if f'(x[i]) = (-4f(x[i+2] + 5f(x[i+3)) / (6h) is a valid formula
+fd.formulas(5, 10)                     # print all forward, backword, and central formulas for the 1st, 2nd, ..., 5th derivatives, using at most 10 points
 ```
