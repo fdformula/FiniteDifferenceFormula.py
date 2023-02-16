@@ -852,11 +852,7 @@ class FDFormula:
             elif self._range_input.stop == 1:
                 s = "backward"
 
-        n = 0    # how many points are actually involved?
-        for i in range(len(data.points)):
-            if data.k[i] == 0:
-                continue
-            n += 1
+        n = self._num_of_used_points()    # how many points are actually involved?
 
         self._python_func_basename = "fd%sderiv%dpt%s" % (self._nth(data.n), n, s)
         fexpr  = "(f, x, i, h) = "
@@ -1409,6 +1405,47 @@ class FDFormula:
         self._print_taylor(coefs, n)
         return
     # end of printtaylor
+
+    # return the number of points actually used in a formula
+    def _num_of_used_points(self):
+        n = 0    # how many points are actually involved?
+        for i in range(len(self._data.points)):
+            if self._data.k[i] == 0:
+                continue
+            n += 1
+        return n
+    # end of _num_of_used_points
+
+    def formulatable(self, highest_order = 3, max_num_of_points = 5):
+        if not (isinstance(highest_order, int) and isinstance(max_num_of_points, int)) or highest_order < 1 or max_num_of_points < 1:
+            print("Error: Invalid input,", highest_order, ", ", max_num_of_points, ". Positive integers are expected,")
+            return
+        half = round(max_num_of_points / 2)
+        for n in range(1, highest_order + 1):
+            # forward schemes
+            for num_of_points in range(n + 1, max_num_of_points + 1):
+                self.compute(n, range(0, num_of_points))
+                if self._formula_status > 0:
+                    print(self._num_of_used_points(), "-point forward finite difference formula:", sep = '')
+                    self._print_bigo_formula(self._data, self._bigO)
+
+            # backward schemes
+            for num_of_points in range(n + 1, max_num_of_points + 1):
+                self.compute(n, range(1 - num_of_points, 1))
+                if self._formula_status > 0:
+                    print(self._num_of_used_points(), "-point backward finite difference formula:", sep = '')
+                    self._print_bigo_formula(self._data, self._bigO)
+
+            # central schemes
+            for num_of_points in range(round(n / 2), half + 1):
+                length = 2 * num_of_points + 1
+                if n >= length or length > max_num_of_points:
+                    continue
+                self.compute(n, range(-num_of_points, num_of_points + 1))
+                if self._formula_status > 0:
+                    print(self._num_of_used_points(), "-point central finite difference formula:", sep = '')
+                    self._print_bigo_formula(self._data, self._bigO)
+    # end of formulatable
 
 # end of class FDFormula:
 
