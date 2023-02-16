@@ -7,8 +7,8 @@ a formula in the big-O notation. We can use it to generate new formulas in addit
 known ones.
 
 We may play with this package when teaching/learning numerical computing, especially the finite
-difference method, and explore the distribution, symmetry, and beauty in the coefficients of the
-formulas. By changing decimal places, we can also see how rounding errors affect a result.
+difference method, and explore the distribution and symmetry in the coefficients of the formulas.
+By changing decimal places, we can also see how rounding errors may affect a result.
 
 Beware, though formulas are mathematically correct, they may not be numerically useful. This is true
 especially when we derive formulas for a derivative of higher order. For example, run
@@ -22,8 +22,8 @@ To run the code, you need the Python programming language (https://python.org/),
 amazing computing platform.
 
 The package exports a class, FDFormula, fd (an object of the class), and member functions,
-activatepythonfunction, compute, decimalplaces, find, findbackward, findforward, formula, printtaylor,
-taylor, truncationerror, verifyformula.
+activatepythonfunction, compute, decimalplaces, find, findbackward, findforward, formula, formulas,
+taylor, taylorcoefs, tcoefs, truncationerror, verifyformula.
 
 See also https://github.com/Winux2k/FiniteDifferenceFormula.py/blob/main/README.md
 """
@@ -77,13 +77,13 @@ class FDFormula:
     _range_inputq             = False
     _range_input              = range(0,0) # compute receives a range? save it
 
-    _python_exact_func_expr   = ""    # 1st exact Python function for f^(n)(x[i])
-    _python_exact_func_expr1  = ""    # 2nd exact Python function for f^(n)(x[i])
-    _python_decimal_func_expr = ""    # decimal Python function for f^(n)(x[i])
+    _python_exact_func_expr   = ""    # 1st exact Python function for f**(n)(x[i])
+    _python_exact_func_expr1  = ""    # 2nd exact Python function for f**(n)(x[i])
+    _python_decimal_func_expr = ""    # decimal Python function for f**(n)(x[i])
     _python_func_basename     = ""
 
     _bigO : str               = ""    # truncation error of a formula
-    _bigO_exp : int           = -1    # the value of n as in O(h^n)
+    _bigO_exp : int           = -1    # the value of n as in O(h**n)
 
     # lambda functions of generated formula
     fde                       = None
@@ -100,7 +100,7 @@ class FDFormula:
     # f(x[i]±kh]) which are used to derive the m-point finite difference formulas
     # for the first, second, ..., order derivatives at x[i].
     #
-    #       f(x[i+1]) = f(x[i]) + 1/1! f'(x[i]) h + 1/2! f''(x[i]) h^2 + ...
+    #       f(x[i+1]) = f(x[i]) + 1/1! f'(x[i]) h + 1/2! f''(x[i]) h**2 + ...
     #
     # where h = x[i+1] - x[i].
     #
@@ -191,11 +191,11 @@ class FDFormula:
             if n <= 3:
                 print("f", "'" * n, "(x[i])", sep = '', end='')
             else:
-                print("f^(", n, ")(x[i])", sep = '', end='')
+                print("f**(", n, ")(x[i])", sep = '', end='')
             if n >= 1:
                 print(" * h", sep = '', end='')
                 if n > 1:
-                    print("^", n, sep = '', end='')
+                    print("**", n, sep = '', end='')
             first_termq = False
 
             num_of_nonzero_terms -= 1
@@ -383,12 +383,12 @@ class FDFormula:
     #
     # It uses the linear combination of f(x[i+j]), j in points, to eliminate
     # f(x[i]), f'(x[i]), ..., so that the first term of the Taylor series
-    # expansion of the linear combination is f^(n)(x[i]):
+    # expansion of the linear combination is f**(n)(x[i]):
     #
     #  k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-    #     = m*f^(n)(x[i]) + ..., m > 0, len = length(points)
+    #     = m*f**(n)(x[i]) + ..., m > 0, len = length(points)
     #
-    # It is this equation that gives the formula for computing f^(n)(x[i]).
+    # It is this equation that gives the formula for computing f**(n)(x[i]).
     #
     # Values of the cofficients k[:] and m will be determined, and the first few
     # terms of the remainder will be listed for calculating the truncation error
@@ -434,11 +434,11 @@ class FDFormula:
         # f(x[i+points[1]]), f(x[i+points[2]]), ..., f(x[i+points[len]]),
         #
         # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-        #  = 0*f(x[i]) + 0*f'(x[i]) + ... + 0*f^(n-1)(x[i]) + m*f^(n)(x[i]) + ...
+        #  = 0*f(x[i]) + 0*f'(x[i]) + ... + 0*f**(n-1)(x[i]) + m*f**(n)(x[i]) + ...
         #    m != 0
         #
-        # so that it must eliminate f(x[i]), f'(x[i]), ..., f^(n-1)(x[i]); given
-        # more points, it also eliminates f^(n+1)(x[i]), f^(n+2)(x[i]), ....
+        # so that it must eliminate f(x[i]), f'(x[i]), ..., f**(n-1)(x[i]); given
+        # more points, it also eliminates f**(n+1)(x[i]), f**(n+2)(x[i]), ....
         #
         # For example, to eliminate f(x[i]), we have
         #
@@ -461,9 +461,9 @@ class FDFormula:
         row = 1
         for order in range(length):  # correspond to f(x[i]), f'(x[i]), f''(x[i]), ...
             if order == n:
-                continue             # skip f^(n)(x[i])
+                continue             # skip f**(n)(x[i])
             #
-            # eliminating f^(order)(x[i])
+            # eliminating f**(order)(x[i])
             # A[:,j] stores coefs of
             #  k[1]*coefs[1][j] + k[2]*coefs[2][j] + ... + k[len]*coefs[len][j] = 0
             for j in range(length):
@@ -692,12 +692,12 @@ class FDFormula:
     #
     # return m as in equation (1) for 'activatepythonfunction'
     def _test_formula_validity(self):
-        # to find f^(n)(x[i]) by obtaining
+        # to find f**(n)(x[i]) by obtaining
         #
         # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-        #   = m*f^(n)(x[i]) + ..., m > 0
+        #   = m*f**(n)(x[i]) + ..., m > 0
         #
-        # the most important step is to know if f(x[i]), f'(x[i]), ..., f^(n-1)(x[i])
+        # the most important step is to know if f(x[i]), f'(x[i]), ..., f**(n-1)(x[i])
         # are all eliminated, i.e.,
         #    k[1]*coefs[1][j] + k[2]*coefs[2][j] + ... + k[len]*coefs[len][j] = 0
         # where j = 1:n
@@ -722,7 +722,7 @@ class FDFormula:
                 if i <= 3:
                     ds = "'" * i
                 else:
-                    ds = "^(%d)" % i
+                    ds = "**(%d)" % i
                 fnxi = "f" + ds + "(x[i])"
 
                 print("***** Error: ", n, ", ", input_points, ", : i = ", i, ", ",
@@ -793,16 +793,16 @@ class FDFormula:
         if self._formula_status == 0:
             self._formula_status = 100    # perfect
 
-        # now, determine the big-O notation - what is x in O(h^x)?
+        # now, determine the big-O notation - what is x in O(h**x)?
         x = len(self._lcombination_coefs)
-        for i in range(n + 1, x):            # skip f^(n)(x[i])
+        for i in range(n + 1, x):            # skip f**(n)(x[i])
             if self._lcombination_coefs[i] != 0:
                 x = i
                 break
         x -= n
         self._bigO = "O(h"
         if x > 1:
-            self._bigO += "^%d" % x
+            self._bigO += "**%d" % x
         self._bigO += ")"
         self._bigO_exp = x
 
@@ -872,7 +872,7 @@ class FDFormula:
         if data.n <=3:
             ds = "'" * data.n
         else:
-            ds = "^(%d)" % data.n
+            ds = "**(%d)" % data.n
         print("f", ds, "(x[i]) = ( ", self._lcombination_expr(data, False),
               sep = '', end = '')
         print(" ) / ", self._denominator_expr(data), " + ", bigO, "\n",
@@ -885,12 +885,12 @@ class FDFormula:
         including
 
         1. k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-               = m*f^(n)(x[i]) + ..., m > 0
+               = m*f**(n)(x[i]) + ..., m > 0
 
-        1. The formula for f^(n)(x[i]), including estimation of accuracy in the
+        1. The formula for f**(n)(x[i]), including estimation of accuracy in the
            big-O notation.
 
-        1. "Python" function(s) for f^(n)(x[i]).
+        1. "Python" function(s) for f**(n)(x[i]).
 
         Calling compute(n, points, True) is the same as calling
         compute(n, points) and then formula().
@@ -960,7 +960,7 @@ class FDFormula:
 
         Output:
            (-1, "")      - There is no valid formula
-           (n, "O(h^n)") - There is a valid formula
+           (n, "O(h**n)") - There is a valid formula
 
         Examples
         ========
@@ -1240,7 +1240,7 @@ class FDFormula:
             print("fd.fde1(f, x, i, h)  # ", self._python_func_basename, "e1", sep = '')
             print("fd.fdd(f, x, i, h)   # ", self._python_func_basename, "d", sep = '')
 
-        # sine is taken as the example b/c sin^(n)(x) = sin(n π/2 + x), simply
+        # sine is taken as the example b/c sin**(n)(x) = sin(n π/2 + x), simply
         exact = math.sin(self._data.n * math.pi /2 + 5) # x[500] = 5
 
         print("\nFor the", self._python_func_basename,
@@ -1262,15 +1262,22 @@ class FDFormula:
         return
     # end of activatepythonfunction
 
-    def taylor(self, j, n = 10):
+    def tcoefs(self, j, n = 10):
         """
-        Compute and return coefficients of the first n terms of the Taylor series of
-        f(x[i + j]) = f(x[i] + jh) about x[i], where h is the increment in x.
+        Same as taylorcoefs(j, n).
+        """
+        self.taylorcoefs(j, n)
+
+    def taylorcoefs(self, j, n = 10):
+        """
+        Same as tcoefs(j, n). Compute and return coefficients of the first n
+        terms of the Taylor series of f(x[i + j]) = f(x[i] + jh) about x[i],
+        where h is the increment in x.
 
         Examples
         ========
-        fd.taylor(-2)
-        fd.taylor(5)
+        fd.tcoefs(-2)
+        fd.tcoefs(5, 4)
         """
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
@@ -1281,12 +1288,12 @@ class FDFormula:
         else:
             print("Invalid input, ", j, ". An integer is expected.")
             return
-    # end of taylor
+    # end of taylorcoefs
 
     # print readable Taylor series expansion of f(x[i + j]) about x[i]
     # for teaching/learning!
     def _printtaylor1(self, j, n = 10):
-        coefs = self.taylor(j, n)
+        coefs = self.taylorcoefs(j, n)
         js = ""
         if j > 0:
             js = "+%d" % j
@@ -1298,7 +1305,7 @@ class FDFormula:
     # end of _printtaylor1
 
     # print readable Taylor series of a function/expression about x[i]. e.g.,
-    # fd.printtaylor(2*fd.taylor(0) - 5*fd.taylor(1) + 4*fd.taylor(2))
+    # fd.taylor(2*fd.tcoefs(0) - 5*fd.tcoefs(1) + 4*fd.tcoefs(2))
     # sad. base Python doesn't provide this convenience. use numpy.
     def _printtaylor2(self, coefs, n = 10):
         self._print_taylor(coefs, n)
@@ -1312,46 +1319,46 @@ class FDFormula:
     # series, or a tuple (points, k[:]), where points and k are as in the
     # linear combination:
     #     k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
-    def printtaylor(self, points_k = (), n = 10):
+    def taylor(self, points_k = (), n = 10):
         """
-        printtaylor()       # added in v0.6.4
+        taylor()       # added in v0.6.4
           - Print the first few nonzero terms of the Taylor series of the linear
             combination k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... for
             the newly computed formula (even if failed).
 
-        printtaylor(j, n = 10)
+        taylor(j, n = 10)
           - Print the 1st n terms of Taylor series of f(x[i+j]) about x[i].
 
-        printtaylor(coefs, n = 10)
+        taylor(coefs, n = 10)
           - Print the 1st n terms of Taylor series with coefficients in 'coefs'
 
-        printtaylor((points, k), n = 10)
+        taylor((points, k), n = 10)
           - Prints the 1st n nonzero terms of the Taylor series of the linear
             combination:  k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ...
 
         The last two provide also another way to verify if a formula is
         mathematically valid or not.
 
-        See also [verifyformula], [activatepythonfunction], and [taylor].
+        See also [verifyformula], [activatepythonfunction], and [taylorcoefs].
 
         Examples
         ========
         fd.compute(1, [0, 1, 5, 8])
-        fd.printtaylor()
+        fd.taylor()
 
-        fd.printtaylor(2)
+        fd.taylor(2)
 
         coefs = [2,-27,270,-490,270,-27,2]
-        fd.printtaylor(coefs, 6)
+        fd.taylor(coefs, 6)
 
-        fd.printtaylor((range(0,4), [-1, 3, -3, 1]), 6)
+        fd.taylor((range(0,4), [-1, 3, -3, 1]), 6)
 
         import numpy as np
         n = 50
         # -2f(x[i+1) + 3f(x[i+2]) -4f(x[i+5])
-        coefs  = -2 * np.array(fd.taylor(1, n)) + 3 * np.array(fd.taylor(2, n))
-        coefs += -4 * np.array(fd.taylor(5, n))
-        fd.printtaylor(list(coefs), n)
+        coefs  = -2 * np.array(fd.tcoefs(1, n)) + 3 * np.array(fd.tcoefs(2, n))
+        coefs += -4 * np.array(fd.tcoefs(5, n))
+        fd.taylor(list(coefs), n)
 
         Note
         ====
@@ -1404,7 +1411,7 @@ class FDFormula:
                 coefs[j] += k[i] * self._taylor_coefs(points[i], max_num_of_terms)[j]
         self._print_taylor(coefs, n)
         return
-    # end of printtaylor
+    # end of taylor
 
     # return the number of points actually used in a formula
     def _num_of_used_points(self):
@@ -1416,9 +1423,25 @@ class FDFormula:
         return n
     # end of _num_of_used_points
 
-    def formulatable(self, highest_order = 3, max_num_of_points = 5):
-        if not (isinstance(highest_order, int) and isinstance(max_num_of_points, int)) or highest_order < 1 or max_num_of_points < 1:
-            print("Error: Invalid input,", highest_order, ", ", max_num_of_points, ". Positive integers are expected,")
+    def formulas(self, highest_order = 3, max_num_of_points = 5):
+        """
+        By default, the function prints all forward, backward, and central finite
+        difference formulas for the 1st, 2nd, and 3rd derivatives, using at most
+        5 points.
+
+        Examples
+        ========
+        julia> from FiniteDifferenceFormula import fd
+        # prints all forward, backward, and central finite difference formulas
+        # for the 1st, 2nd, ..., 5th derivatives, using at most 11 points.
+        julia> fd.formulas(5, 11)
+        """
+        if  not isinstance(highest_order, int) or \
+            not isinstance(max_num_of_points, int) or \
+            highest_order < 1 or \
+            max_num_of_points < 1:
+            print("Error: Invalid input,", highest_order, ", ",
+                  max_num_of_points, ". Positive integers are expected,")
             return
         half = round(max_num_of_points / 2)
         for n in range(1, highest_order + 1):
@@ -1426,26 +1449,30 @@ class FDFormula:
             for num_of_points in range(n + 1, max_num_of_points + 1):
                 self.compute(n, range(0, num_of_points))
                 if self._formula_status > 0:
-                    print(self._num_of_used_points(), "-point forward finite difference formula:", sep = '')
+                    print(self._num_of_used_points(),
+                          "-point forward finite difference formula:", sep = '')
                     self._print_bigo_formula(self._data, self._bigO)
 
             # backward schemes
             for num_of_points in range(n + 1, max_num_of_points + 1):
                 self.compute(n, range(1 - num_of_points, 1))
                 if self._formula_status > 0:
-                    print(self._num_of_used_points(), "-point backward finite difference formula:", sep = '')
+                    print(self._num_of_used_points(),
+                          "-point backward finite difference formula:", sep = '')
                     self._print_bigo_formula(self._data, self._bigO)
 
             # central schemes
             for num_of_points in range(round(n / 2), half + 1):
                 length = 2 * num_of_points + 1
-                if n >= length or length > max_num_of_points:
+                if n >= length:
                     continue
                 self.compute(n, range(-num_of_points, num_of_points + 1))
                 if self._formula_status > 0:
-                    print(self._num_of_used_points(), "-point central finite difference formula:", sep = '')
-                    self._print_bigo_formula(self._data, self._bigO)
-    # end of formulatable
+                    x = self._num_of_used_points()
+                    if x <= max_num_of_points:
+                        print(x, "-point central finite difference formula:", sep = '')
+                        self._print_bigo_formula(self._data, self._bigO)
+    # end of formulas
 
 # end of class FDFormula:
 
