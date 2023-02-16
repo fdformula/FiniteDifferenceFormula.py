@@ -1,6 +1,6 @@
 # FiniteDifferenceFormula
 
-Ported from a Julia package, https://github.com/Winux2k/FiniteDifferenceFormula.jl, this
+Ported from a Julia package, https://github.com/fdformula/FiniteDifferenceFormula.jl, this
 Python package provides a general finite difference formula generator and a tool for
 teaching/learning the finite difference method. It generates finite difference formulas
 for derivatives of various orders by using Taylor series expansions of a function at evenly
