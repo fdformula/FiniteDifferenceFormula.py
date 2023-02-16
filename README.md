@@ -5,12 +5,8 @@ Python package provides a general finite difference formula generator and a tool
 teaching/learning the finite difference method. It generates finite difference formulas
 for derivatives of various orders by using Taylor series expansions of a function at evenly
 spaced points. It also gives the truncation error of a formula in the big-O notation. We
-can use it to generate new formulas in addition to verification of known ones.
-
-We may play with this package when teaching/learning numerical computing, especially
-the finite difference method, and explore the distribution and symmetry in the
-coefficients of the formulas. By changing decimal places, we can also see how rounding
-errors may affect a result.
+can use it to generate new formulas in addition to verification of known ones. By changing
+decimal places, we can also see how rounding errors may affect a result.
 
 Beware, though formulas are mathematically correct, they may not be numerically useful.
 This is true especially when we derive formulas for a derivative of higher order. For
@@ -20,8 +16,7 @@ can hardly be put into use for numerical computing without, if possible, rewriti
 in a special way. Similarly, the more points are used, the more precise a formula
 is mathematically. However, due to rounding errors, this may not be true numerically.
 
-To run the code, you need the Python programming language (https://python.org/), a
-wonderful and amazing computing platform.
+To run the code, you need the Python programming language (https://python.org/).
 
 ## How to install the package
 
