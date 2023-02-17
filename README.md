@@ -169,10 +169,10 @@ provided.
 The function prints the first n nonzero terms of a Taylor series of which the linear combination
 of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), where L = len(points).
 
-### function ```formulas(highest_order = 3, max_num_of_points = 5)```
+### function ```formulas(orders = [1, 2, 3], min_num_of_points = 2, max_num_of_points = 5)```
 
 By default, the function prints all forward, backward, and central finite difference formulas for
-the 1st, 2nd, and 3rd derivatives, using at most 5 points.
+the 1st, 2nd, and 3rd derivatives, using 2 to 5 points.
 
 ## Examples
 
@@ -190,5 +190,6 @@ fd.taylor(-2, 5)                       # print the first 5 terms of the Taylor s
 fd.taylor(([-2,1], [3, -4]), 6)        # print the first 6 terms of the Taylor series of 3f(x[i-2]) - 4f(x[i+1])
 fd.activatepythonfunction()            # activate Python function(s) of the newly computed formula in present REPL session
 fd.verifyformula(1, [2,3], [-4, 5], 6) # verify if f'(x[i]) = (-4f(x[i+2] + 5f(x[i+3)) / (6h) is a valid formula
-fd.formulas(5, 10)                     # print all forward, backword, and central formulas for the 1st, 2nd, ..., 5th derivatives, using at most 10 points
+fd.formulas(2, 5, 9)                   # print all forward, backword, and central formulas for the 2nd derivative, using 5 to 9 points
+fd.formulas([2, 4], 5, 9)              # print all forward, backword, and central formulas for the 2nd and 4th derivatives, using 5 to 9 points
 ```
