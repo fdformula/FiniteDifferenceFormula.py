@@ -1427,8 +1427,7 @@ class FDFormula:
                  max_num_of_points : int = 5):
         """
         By default, the function prints all forward, backward, and central finite
-        difference formulas for the 1st, 2nd, and 3rd derivatives, using at least 2
-        and at most 5 points.
+        difference formulas for the 1st, 2nd, and 3rd derivatives, using 2 to 5 points.
 
         Examples
         ========
