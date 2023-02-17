@@ -1423,30 +1423,60 @@ class FDFormula:
         return n
     # end of _num_of_used_points
 
-    def formulas(self, highest_order = 3, max_num_of_points = 5):
+    def formulas(self, orders = range(1, 4), min_num_of_points : int = 2,
+                 max_num_of_points : int = 5):
         """
         By default, the function prints all forward, backward, and central finite
-        difference formulas for the 1st, 2nd, and 3rd derivatives, using at most
-        5 points.
+        difference formulas for the 1st, 2nd, and 3rd derivatives, using at least 2
+        and at most 5 points.
 
         Examples
         ========
-        julia> from FiniteDifferenceFormula import fd
-        # prints all forward, backward, and central finite difference formulas
-        # for the 1st, 2nd, ..., 5th derivatives, using at most 11 points.
-        julia> fd.formulas(5, 11)
+        # The following examples show all forward, backward, and central finite
+        # difference formulas for the specified derivatives, using at least 4 and
+        # at most 11 points.
+        from FiniteDifferenceFormula import fd
+        fd.formulas(range(2, 6), 4, 11)    # the 2nd, 3rd, .., 5th derivatives
+        fd.formulas([2, 4], 4, 11)         # the 2nd and 4th derivatives
+        fd.formulas(3, 4, 11)              # the 3rd derivative
         """
-        if  not isinstance(highest_order, int) or \
-            not isinstance(max_num_of_points, int) or \
-            highest_order < 1 or \
-            max_num_of_points < 1:
-            print("Error: Invalid input,", highest_order, ", ",
-                  max_num_of_points, ". Positive integers are expected,")
+        if min_num_of_points < 2:
+            print("Error: Invalid input, min_num_of_points =",
+                  min_num_of_points, ". It must be greater than 1.")
             return
+        elif max_num_of_points < min_num_of_points:
+            print("Error: Invalid input, max_num_of_points =",
+                  max_num_of_points, ". It must be greater than",
+                  min_num_of_points)
+            return
+
+        if isinstance(orders, int) and orders >= 1:
+            orders = [ orders ]
+        elif isinstance(orders, range) and orders.start >= 1:
+            orders = list(orders)
+        elif isinstance(orders, list):
+            for i in orders:
+                if not (isinstance(i, int) and i >= 1):
+                    print("Error: Invalid input, orders =", orders, ".",
+                          "A list of positive integers are expected,")
+                    return
+        else:
+            print("Error: Invalid input, orders =", orders, ".",
+                  "An positive integer or a list of positive integers",
+                  "are expected,")
+            return
+
+        oldlen = len(orders)
+        orders = sorted(set(orders))
+        if oldlen != len(orders):
+            print("Your input: formulas(", orders, ", ", min_num_of_points,
+                  ", ", max_num_of_points, ")", sep = '')
+
         half = round(max_num_of_points / 2)
-        for n in range(1, highest_order + 1):
+        for n in orders:
             # forward schemes
-            for num_of_points in range(n + 1, max_num_of_points + 1):
+            start = max(n + 1, min_num_of_points)
+            for num_of_points in range(start, max_num_of_points + 1):
                 self.compute(n, range(0, num_of_points))
                 if self._formula_status > 0:
                     print(self._num_of_used_points(),
@@ -1454,7 +1484,7 @@ class FDFormula:
                     self._print_bigo_formula(self._data, self._bigO)
 
             # backward schemes
-            for num_of_points in range(n + 1, max_num_of_points + 1):
+            for num_of_points in range(start, max_num_of_points + 1):
                 self.compute(n, range(1 - num_of_points, 1))
                 if self._formula_status > 0:
                     print(self._num_of_used_points(),
@@ -1462,7 +1492,8 @@ class FDFormula:
                     self._print_bigo_formula(self._data, self._bigO)
 
             # central schemes
-            for num_of_points in range(round(n / 2), half + 1):
+            for num_of_points in range(math.floor(max(n, min_num_of_points) / 2), \
+                                       math.ceil(max_num_of_points / 2)):
                 length = 2 * num_of_points + 1
                 if n >= length:
                     continue
