@@ -1,31 +1,28 @@
 """
-Ported from a Julia package, https://github.com/Winux2k/FiniteDifferenceFormula.jl, this Python package
-provides a general finite difference formula generator and a tool for teaching/learning the finite
-difference method. It generates finite difference formulas for derivatives of various orders by using
-Taylor series expansions of a function at evenly spaced points. It also gives the truncation error of
-a formula in the big-O notation. We can use it to generate new formulas in addition to verification of
-known ones.
+Ported from a Julia package, https://github.com/Winux2k/FiniteDifferenceFormula.jl,
+this Python package provides a general finite difference formula generator and a
+tool for teaching/learning the finite difference method. It generates finite
+difference formulas for derivatives of various orders by using Taylor series
+expansions of a function at evenly spaced points. It also gives the truncation
+error of a formula in the big-O notation. We can use it to generate new formulas
+in addition to verification of known ones. By changing decimal places, we can
+also see how rounding errors may affect a result.
 
-We may play with this package when teaching/learning numerical computing, especially the finite
-difference method, and explore the distribution and symmetry in the coefficients of the formulas.
-By changing decimal places, we can also see how rounding errors may affect a result.
+Beware, though formulas are mathematically correct, they may not be numerically
+useful. This is true especially when we derive formulas for a derivative of higher
+order. For example, run compute(9,range(-5, 6)), provided by this package, to
+generate a 10-point central formula for the 9-th derivative. The formula is
+mathematically correct, but it can hardly be put into use for numerical computing
+without, if possible, rewriting it in a special way. Similarly, the more points
+are used, the more precise a formula is mathematically. However, due to rounding
+errors, this may not be true numerically.
 
-Beware, though formulas are mathematically correct, they may not be numerically useful. This is true
-especially when we derive formulas for a derivative of higher order. For example, run
-compute(9,range(-5, 6)), provided by this package, to generate a 10-point central formula for the
-9-th derivative. The formula is mathematically correct, but it can hardly be put into use for
-numerical computing without, if possible, rewriting it in a special way. Similarly, the more points
-are used, the more precise a formula is mathematically. However, due to rounding errors, this may
-not be true numerically.
+The package exports a class, FDFormula, fd (an object of the class), and member
+functions, activatepythonfunction, compute, decimalplaces, find, findbackward,
+findforward, formula, formulas, taylor, taylorcoefs, tcoefs, truncationerror,
+verifyformula.
 
-To run the code, you need the Python programming language (https://python.org/), a wonderful and
-amazing computing platform.
-
-The package exports a class, FDFormula, fd (an object of the class), and member functions,
-activatepythonfunction, compute, decimalplaces, find, findbackward, findforward, formula, formulas,
-taylor, taylorcoefs, tcoefs, truncationerror, verifyformula.
-
-See also https://github.com/Winux2k/FiniteDifferenceFormula.py/blob/main/README.md
+See also https://github.com/fdformula/FiniteDifferenceFormula.py/blob/main/README.md.
 """
 #-------------------------------------------------------------------------------
 # Name:        FiniteDifferenceFormula
@@ -1440,13 +1437,13 @@ class FDFormula:
         fd.formulas(3, 4, 11)              # the 3rd derivative
         """
         if min_num_of_points < 2:
-            print("Error: Invalid input, min_num_of_points =",
-                  min_num_of_points, ". It must be greater than 1.")
+            print("Error: Invalid input, min_num_of_points = ",
+                  min_num_of_points, ". It must be greater than 1.", sep = '')
             return
         elif max_num_of_points < min_num_of_points:
-            print("Error: Invalid input, max_num_of_points =",
-                  max_num_of_points, ". It must be greater than",
-                  min_num_of_points)
+            print("Error: Invalid input, max_num_of_points = ",
+                  max_num_of_points, ". It must be greater than ",
+                  min_num_of_points, ".", sep = '')
             return
 
         if isinstance(orders, int) and orders >= 1:
@@ -1456,13 +1453,13 @@ class FDFormula:
         elif isinstance(orders, list):
             for i in orders:
                 if not (isinstance(i, int) and i >= 1):
-                    print("Error: Invalid input, orders =", orders, ".",
-                          "A list of positive integers are expected,")
+                    print("Error: Invalid input, orders = ", orders, ".",
+                          "A list of positive integers are expected.", sep = '')
                     return
         else:
-            print("Error: Invalid input, orders =", orders, ".",
-                  "An positive integer or a list of positive integers",
-                  "are expected,")
+            print("Error: Invalid input, orders = ", orders, ".",
+                  "An positive integer or a list of positive integers ",
+                  "are expected.", sep = '')
             return
 
         oldlen = len(orders)
@@ -1471,7 +1468,6 @@ class FDFormula:
             print("Your input: formulas(", orders, ", ", min_num_of_points,
                   ", ", max_num_of_points, ")", sep = '')
 
-        half = round(max_num_of_points / 2)
         for n in orders:
             # forward schemes
             start = max(n + 1, min_num_of_points)
@@ -1491,8 +1487,9 @@ class FDFormula:
                     self._print_bigo_formula(self._data, self._bigO)
 
             # central schemes
-            for num_of_points in range(math.floor(max(n, min_num_of_points) / 2), \
-                                       math.ceil(max_num_of_points / 2) + 1):
+            start = math.floor(max(n, min_num_of_points) / 2)
+            stop  = math.ceil(max_num_of_points / 2) + 1
+            for num_of_points in range(start, stop):
                 length = 2 * num_of_points + 1
                 if n >= length:
                     continue
