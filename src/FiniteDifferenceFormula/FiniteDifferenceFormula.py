@@ -1453,11 +1453,11 @@ class FDFormula:
         elif isinstance(orders, list):
             for i in orders:
                 if not (isinstance(i, int) and i >= 1):
-                    print("Error: Invalid input, orders = ", orders, ".",
+                    print("Error: Invalid input, orders = ", orders, ". ",
                           "A list of positive integers are expected.", sep = '')
                     return
         else:
-            print("Error: Invalid input, orders = ", orders, ".",
+            print("Error: Invalid input, orders = ", orders, ". ",
                   "An positive integer or a list of positive integers ",
                   "are expected.", sep = '')
             return
