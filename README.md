@@ -70,14 +70,14 @@ k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ... + k[L]*f(x[i+points[L]]) =
 where L = len(points) - 1. It is this equation that gives the formula for computing f^(n)(x[i])
 and the truncation error in the big-O notation as well.
 
-### function ```loadcomputingresults(results)```
+### function ```loadcomputingresults```(results)
 
 The function loads results, a tuple of the form (n, points, k, m), returned by ```compute```.
 For example, it may take hours to compute/find formulas invloving hundreds of points. In this
 case, we can save the results in a text file and come back later to work on the results
 with ```activatepythonfunction```, ```formula```, ```truncationerror```, and so on.
 
-### function ```formula()```
+### function ```formula```()
 
 The function generates and lists
 
@@ -88,12 +88,12 @@ The function generates and lists
 
 1. "Python" function(s) for f^(n)(x[i]).
 
-### function ```truncationerror()```
+### function ```truncationerror```()
 
 The function returns a tuple, (n, "O(h^n)"), the truncation error of the newly computed finite
 difference formula in the big-O notation.
 
-### function ```decimalplaces(n = 16)```
+### function ```decimalplaces```(n = 16)
 
 The function sets to n the decimal places for generating Python function(s) for formulas. It
 returns the (new) decimal places. Note: Passing to it a negative integer will return th
@@ -102,7 +102,7 @@ present decimal places (without making any changes).
 This function can only affect Python functions with the suffix "d" such as f1stderiv2ptcentrald.
 See function activatepythonfunction().
 
-### function ```activatepythonfunction()```
+### function ```activatepythonfunction```()
 
 Call this function to activate the Python function(s) for the newly computed finite
 difference formula. For example, after compute(1, [-1, 0, 1]) and decimalplaces(4), it activates the
@@ -132,7 +132,7 @@ fd.fdd(f, x, i, h)   # result: 0.2836574577837647, relative error = 0.00166666%
                      # cp:     0.2836621854632262
 ```
 
-### function ```verifyformula(n, points, k, m)```
+### function ```verifyformula```(n, points, k, m)
 
 It allows users to load a formula from some source to test and see if it is correct. If it is valid,
 its truncation error in the big-O notation can be determined. Furthermore, if the input data is not
@@ -150,26 +150,26 @@ fd.verifyformula(4, [0, 1, 2, 3, 4], [2/5, -8/5, 12/5, -8/3, 2/5], 5)
 fd.verifyformula(2, [-1, 2, 0, 2, 3, 6], [1.257, 21.16, 2.01, -3.123, -9.5], -12)
 ```
 
-### function ```taylorcoefs(j, n = 10)``` or ```tcoefs(j, n = 10)```
+### function ```taylorcoefs```(j, n = 10) or ```tcoefs```(j, n = 10)
 
 The function returns the coefficients of the first n terms of the Taylor series of f(x[i+j])
 about x[i].
 
-### function ```taylor(j, n = 10)```
+### function ```taylor```(j, n = 10)
 
 The function prints the first n terms of the Taylor series of f(x[i+j]) about x[i].
 
-### function ```taylor(coefficients_of_taylor_series, n = 10)```
+### function ```taylor```(coefficients_of_taylor_series, n = 10)
 
 The function prints the first n nonzero terms of a Taylor series of which the coefficients are
 provided.
 
-### function ```taylor((points, k), n = 10)```
+### function ```taylor```((points, k), n = 10)
 
 The function prints the first n nonzero terms of a Taylor series of which the linear combination
 of k[0]f(x[i+points[0]]) + k[1]f(x[i+points[1]]) + ... + k[L]f(x[i+points[L]]), where L = len(points).
 
-### function ```formulas(orders = [1, 2, 3], min_num_of_points = 2, max_num_of_points = 5)```
+### function ```formulas```(orders = [1, 2, 3], min_num_of_points = 2, max_num_of_points = 5)
 
 By default, the function prints all forward, backward, and central finite difference formulas for
 the 1st, 2nd, and 3rd derivatives, using 2 to 5 points.
