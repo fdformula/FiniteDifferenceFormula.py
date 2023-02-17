@@ -1492,7 +1492,7 @@ class FDFormula:
 
             # central schemes
             for num_of_points in range(math.floor(max(n, min_num_of_points) / 2), \
-                                       math.ceil(max_num_of_points / 2)):
+                                       math.ceil(max_num_of_points / 2) + 1):
                 length = 2 * num_of_points + 1
                 if n >= length:
                     continue
