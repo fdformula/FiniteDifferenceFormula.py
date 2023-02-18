@@ -1438,11 +1438,11 @@ class FDFormula:
         """
         if min_num_of_points < 2:
             print("Error: Invalid input, min_num_of_points = ",
-                  min_num_of_points, ". It must be greater than 1.", sep = '')
+                  min_num_of_points, ". It must be at least 2.", sep = '')
             return
         elif max_num_of_points < min_num_of_points:
             print("Error: Invalid input, max_num_of_points = ",
-                  max_num_of_points, ". It must be greater than ",
+                  max_num_of_points, ". It must be at least ",
                   min_num_of_points, ".", sep = '')
             return
 
