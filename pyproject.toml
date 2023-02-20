@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "FiniteDifferenceFormula"
-version = "0.6.9"
+version = "0.7.0"
 authors = [
   { name="David Wang", email="dwang2000@gmail.com" },
 ]
