@@ -199,7 +199,6 @@ class FDFormula:
             if num_of_nonzero_terms == 0:
                 break
         print(" + ...")
-        return
     # end of _print_taylor
 
     def _dashline(self, ):
@@ -273,7 +272,7 @@ class FDFormula:
         """
         points = self._validate_input(n, points, printformulaq)
         if points == []:
-            return
+            return None
         return self._compute(n, points, printformulaq)
     # end of compute
 
@@ -295,7 +294,7 @@ class FDFormula:
         """
         points = self._validate_input(n, points, printformulaq)
         if points == []:
-            return
+            return None
         result = self._compute(n, points, printformulaq)
         while result == None and len(points) > n + 1:   # failed
             if self._range_inputq:
@@ -318,7 +317,7 @@ class FDFormula:
     def _findforward(self, n, points, printformulaq = False, forwardq:bool = True):
         points = self._validate_input(n, points, printformulaq)
         if points == []:
-            return
+            return None
         result = self._compute(n, points, printformulaq)
         while result == None and len(points) > n + 1:   # failed
             #points = forwardq ? points[2 : end] : points[1 : end - 1]
@@ -412,7 +411,7 @@ class FDFormula:
         #     th = n == 1 ? "st" : (n == 2 ? "nd" : (n == 3 ? "rd" : "th"))
         #     println("$pts is invalid because at least $(n + 1) points are ",
         #             "needed for the $n$th derivative.")
-        #     return
+        #     return None
         # end
         #
         # setup a linear system Ax = B first
@@ -593,7 +592,6 @@ class FDFormula:
         self._computedq = True
 
         self._test_formula_validity()
-        return
     # end of loadcomputingresults
 
     # input: A, n x (n + 1) "matrix" of Fraction numbers
@@ -946,8 +944,6 @@ class FDFormula:
                       self._python_decimal_func_expr, "\n", sep = '')
         else:
             print("\nNo formula can be found.")
-
-        return
     # end of formula
 
     def truncationerror(self):
@@ -1034,11 +1030,11 @@ class FDFormula:
         if (not isinstance(n, int)) or n <= 0:
             print("Error: invalid first argument, ", n, ". A positive ",
                   "integer is expected.", sep = '')
-            return
+            return None
         if len(points) == 1:
             print("Error: invalid input, points = ", points, ". A list of ",
                   "two or more points is expected.", sep = '')
-            return
+            return None
         all_intq = True
         for i in points:
             if not isinstance(i, int):
@@ -1047,16 +1043,16 @@ class FDFormula:
         if not all_intq:
             print("Error: invalid input, ", points, ". Integers are expected.",
                   sep = '')
-            return
+            return None
 
         if isinstance(points, tuple):
             print("Invalid input, ", points,
                   ". A list like [1, 2, ...] is expected.", sep = '')
-            return
+            return None
         if isinstance(k, tuple):
             print("Invalid input, ", k, ". A list like [1, 2, ...] is expected",
                   sep = '')
-            return
+            return None
 
         oldlen = len(points)
         points = sorted(set(points))
@@ -1067,11 +1063,11 @@ class FDFormula:
         #if n <= len
         #    println("Error: at least $(n+1) points are needed for the $(_nth(n))",
         #            " derivative.")
-        #    return
+        #    return None
         #end
         if length != len(k):
             print("Error: The number of points != the number of coefficients.");
-            return
+            return None
 
         self._initialization()      # needed b/c it's like computing a new formula
         input_points = self._format_of_points(points)
@@ -1097,7 +1093,7 @@ class FDFormula:
                       sep = '')
             print("Error: invalid input, the last argument m = 0. ",
                   "It can't be zero.")
-            return
+            return None
 
         # "normalize" k[:] so that each element is integer
         all_intq = True
@@ -1182,7 +1178,7 @@ class FDFormula:
                       "fd.activatepythonfunction() to activate the new",
                       "Python function(s).")
                 return result
-        return
+        return None
     # end of verifyformula
 
     def _printexampleresult(self, suffix, exact):
@@ -1255,8 +1251,6 @@ class FDFormula:
         # 250, a sepcial value for communication w/ 'verifyformula'
         if not (external_dataq and self._formula_status == 250):
             print("\nCall fd.formula() to view the very definition.")
-
-        return
     # end of activatepythonfunction
 
     def tcoefs(self, j, n = 10):
@@ -1278,13 +1272,13 @@ class FDFormula:
         """
         if n < 1:
             print("n = %d? It is expected to be an positive integer." % n)
-            return
+            return None
 
         if isinstance(j, int):
             return self._taylor_coefs(j, n)
         else:
             print("Invalid input, ", j, ". An integer is expected.")
-            return
+            return None
     # end of taylorcoefs
 
     # print readable Taylor series expansion of f(x[i + j]) about x[i]
@@ -1298,7 +1292,6 @@ class FDFormula:
             js = "%d" % j
         print("f(x[i", js, "]) = ", sep = '', end = '')
         self._print_taylor(coefs, n)
-        return
     # end of _printtaylor1
 
     # print readable Taylor series of a function/expression about x[i]. e.g.,
@@ -1306,9 +1299,6 @@ class FDFormula:
     # sad. base Python doesn't provide this convenience. use numpy.
     def _printtaylor2(self, coefs, n = 10):
         self._print_taylor(coefs, n)
-
-        return
-    # end of _printtaylor1
 
     # awkard implementation: Julia's multiple dispatchment is super...
     #
@@ -1407,7 +1397,6 @@ class FDFormula:
             for j in range(max_num_of_terms):
                 coefs[j] += k[i] * self._taylor_coefs(points[i], max_num_of_terms)[j]
         self._print_taylor(coefs, n)
-        return
     # end of taylor
 
     # return the number of points actually used in a formula
