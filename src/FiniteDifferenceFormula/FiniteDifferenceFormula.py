@@ -1263,7 +1263,7 @@ class FDFormula:
         """
         Same as taylorcoefs(j, n).
         """
-        self.taylorcoefs(j, n)
+        return self.taylorcoefs(j, n) # v0.6.9 add 'return'
 
     def taylorcoefs(self, j, n = 10):
         """
@@ -1499,6 +1499,8 @@ class FDFormula:
                     if x <= max_num_of_points:
                         print(x, "-point central finite difference formula:", sep = '')
                         self._print_bigo_formula(self._data, self._bigO)
+                    #else:
+                    #   self._initialization() # v0.6.9
     # end of formulas
 
 # end of class FDFormula:
