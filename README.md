@@ -186,11 +186,14 @@ fd.compute(2, [-3, -2, 1, 2, 7])       # find formula for f''(x[i]) using points
 fd.compute(1,range(-230, 231))         # find "461"-point central formula for f'(x[i]). does it exist? run the code!
 fd.formula()                           # generate and print the formula computed last time you called compute(...)
 fd.truncationerror()                   # print and return the truncation error of the newly computed formula
-fd.taylor(-2, 5)                       # print the first 5 terms of the Taylor series of f(x[i-2]) about x[i]
-fd.taylor(([-2,1], [3, -4]), 6)        # print the first 6 terms of the Taylor series of 3f(x[i-2]) - 4f(x[i+1])
+fd.taylor(-2, 50)                      # print the first 50 terms of the Taylor series of f(x[i-2]) about x[i]
+
 import numpy as np
-n = 50; coefs  = -2 * np.array(fd.tcoefs(1, n)) + 3 * np.array(fd.tcoefs(2, n)) - 4 * np.array(fd.tcoefs(5, n))
-fd.taylor(list(coefs), n)              # print the first 50 nonzero terms of the Taylor series of -2f(x[i+1) + 3f(x[i+2]) - 4f(x[i+5])
+coefs  = -2 * np.array(fd.tcoefs(1)) + 3 * np.array(fd.tcoefs(2)) - 4 * np.array(fd.tcoefs(5))
+fd.taylor(list(coefs), 9)              # print the first 9 nonzero terms of the Taylor series of -2f(x[i+1) + 3f(x[i+2]) - 4f(x[i+5])
+
+fd.taylor(([1, 2, 5], [-2, 3, -4]), 9) # same as above
+
 fd.activatepythonfunction()            # activate Python function(s) of the newly computed formula in present REPL session
 fd.verifyformula(1, [2,3], [-4, 5], 6) # verify if f'(x[i]) = (-4f(x[i+2] + 5f(x[i+3)) / (6h) is a valid formula
 fd.formulas(2, 5, 9)                   # print all forward, backword, and central formulas for the 2nd derivative, using 5 to 9 points
