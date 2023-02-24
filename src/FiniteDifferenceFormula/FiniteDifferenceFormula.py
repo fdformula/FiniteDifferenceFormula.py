@@ -697,7 +697,6 @@ class FDFormula:
         #    k[1]*coefs[1][j] + k[2]*coefs[2][j] + ... + k[len]*coefs[len][j] = 0
         # where j = 1:n
         n, k   = self._data.n, self._data.k
-        coefs  = self._data.coefs
         points = self._data.points
         length = len(points)
 
@@ -1084,8 +1083,8 @@ class FDFormula:
             if not isinstance(m, Fraction):
                 m = Fraction(m).limit_denominator()   # rationalize
             for i in range(length):
-                k[i] *= m.den
-            m = m.num
+                k[i] *= m.denominator
+            m = m.numerator
             rewrittenq = True
         if m == 0:
             if rewrittenq:
