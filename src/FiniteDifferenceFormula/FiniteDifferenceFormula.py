@@ -1105,7 +1105,7 @@ class FDFormula:
             if isinstance(k[i], Fraction):
                 if k[i].denominator == 1:
                     continue
-                m         *= k[i].denominator
+                m *= k[i].denominator
                 rewrittenq = True
                 d = k[i].denominator
                 for j in range(length):
@@ -1115,7 +1115,7 @@ class FDFormula:
                 k[i] = round(k[i])
 
             # print k[:] nicely
-            ks = "[%d" % k[1]
+            ks = "[%d" % k[0]
             for i in range(1, length):
                 ks += ", %d" % k[i]
             ks += "]"
@@ -1133,7 +1133,7 @@ class FDFormula:
         # Taylor series of the linear combination
         # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
         self._lcombination_coefs = [Fraction(0,1)] * max_num_of_terms
-        for i in range(1, length):
+        for i in range(length):
             if k[i] == 0:
                 continue
             for j in range(max_num_of_terms):
