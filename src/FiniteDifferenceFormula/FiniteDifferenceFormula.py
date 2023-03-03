@@ -721,9 +721,9 @@ class FDFormula:
                 print("***** Error: ", n, ", ", input_points, sep = '', end = '')
                 if verifyingq:
                     print(", ", k, sep = '', end = '')
-                print(": i = ", i, ", ",
-                      "k[1]*coefs[1][", i, "] + k[2]*coefs[2][", i, "] + ... = ", x,
-                      " != 0, i.e., ", fnxi, " can't be eliminated as indicated ",
+                print(": k[1]*coefs[1][", i, "] + k[2]*coefs[2][", i,
+                      "] + ... = ", x, " != 0, i.e., ", fnxi,
+                      " can't be eliminated as indicated ",
                       "in the following computing result:", sep = '')
                 print(self._dashline())
                 print(self._lcombination_expr(self._data), "=\n    ", end = '')
