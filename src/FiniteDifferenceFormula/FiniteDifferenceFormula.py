@@ -201,8 +201,8 @@ class FDFormula:
         print(" + ...")
     # end of _print_taylor
 
-    def _dashline(self, ):
-        return "-" * 105
+    def _dashline(self, n = 105):
+        return "-" * n
 
     def _validate_input(self, n, points, printformulaq = False):
         if (not isinstance(n, int)) or n < 1:
@@ -762,8 +762,7 @@ class FDFormula:
                       self._nth(n), " derivative.", sep = '')
                 self._formula_status = -200
                 return m
-            print("\n***** Error: ", n, ", ", input_points, " : can't find a ",
-                  "formula.\n", sep = '')
+            print("\n***** Error: can't find a formula.\n")
             self._formula_status = -100
             return m
 
@@ -1053,11 +1052,12 @@ class FDFormula:
                   sep = '')
             return None
 
-        oldlen = len(points)
-        points = sorted(set(points))
         length = len(points)
+        if length != len(set(points)): # v0.7.3, removed sorted(..)
+            print("Error: Invalid input -", points, "contains duplicate points.")
+            return None
+        points = list(points)
 
-        rewrittenq = oldlen != length
         # don't do so for teaching
         #if n <= len
         #    println("Error: at least $(n+1) points are needed for the $(_nth(n))",
@@ -1071,6 +1071,7 @@ class FDFormula:
         self._initialization()      # needed b/c it's like computing a new formula
         input_points = self._format_of_points(points)
 
+        rewrittenq = False
         # "normalize" input so that m > 0, and m is integer
         if m < 0:
             for i in range(length):
@@ -1155,9 +1156,17 @@ class FDFormula:
                     "It should be ", ms, ".\n", sep = '')
             find_oneq = True
 
-        if find_oneq:                  # the input can't be a formula, but still
+        if find_oneq:
+            # v0.7.3
+            print(">>>>> Your input doesn't define a valid finite difference",
+                  "formula.\n\nHowever, it is still activated for your",
+                  "examination.\n")
+
             self._formula_status = 250 # force to activate Python function
             # 250, reserved for communication w/ another 'activatepythonfunction'
+        else: # v0.7.3
+            print(">>>>> Your input defines a valid finite difference formula.\n")
+
         self._computedq = True         # assume a formula has been computed
 
         # force to activate even for invalid input formula
@@ -1170,7 +1179,7 @@ class FDFormula:
 
         if find_oneq:                   # use the input to generate a formula
             self._formula_status = -100
-            print(self._dashline(), "\nFinding a formula using the points....")
+            print(self._dashline(), "\nFinding a formula using the points...\n")
             result = self._compute(n, points)
             if self._formula_status >= 0:
                 print("Call fd.formula() to view the results and",
@@ -1221,9 +1230,9 @@ class FDFormula:
             return
 
         self._python_func_expr(self._data)  # set _python_func_basename
-        print("The following function(s) is available",
-                "temporarily in the FiniteDifferenceFormula module.\n\n",
-                "Usage:\n=====", sep = '')
+        print("The following function(s) is available ",
+              "temporarily in the FiniteDifferenceFormula module.\n\n",
+              "Usage:\n=====", sep = '')
         print("from math import sin, cos, tan, pi, exp, log")
         print("f, i, h = sin, 500, 0.01")
         print("x = [ 0.01 * i for i in range(0, 1001) ]")
