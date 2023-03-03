@@ -59,7 +59,7 @@ class _FDData:
 
 class FDFormula:
     _data : _FDData           = None  # share results between functions
-    _computedq                = False # make sure compute is called first
+    _computedq                = False # make sure compute() is called first
     _formula_status           = 0     # a formula may not be available
                                       # values? see _test_formula_validity()
 
@@ -590,8 +590,7 @@ class FDFormula:
 
         self._data = _FDData(n, points, k, m, coefs)
         self._computedq = True
-
-        self._test_formula_validity()
+        self._test_formula_validity(True)
     # end of loadcomputingresults
 
     # input: A, n x (n + 1) "matrix" of Fraction numbers
@@ -686,7 +685,7 @@ class FDFormula:
     #        symmetry of coefficients about x[i]
     #
     # return m as in equation (1) for 'activatepythonfunction'
-    def _test_formula_validity(self):
+    def _test_formula_validity(self, verifyingq = False):
         # to find f**(n)(x[i]) by obtaining
         #
         # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
@@ -762,7 +761,10 @@ class FDFormula:
                       self._nth(n), " derivative.", sep = '')
                 self._formula_status = -200
                 return m
-            print("\n***** Error: can't find a formula.\n")
+            print("\n***** Error: ", n, ", ", input_points, sep = '', end = '')
+            if verifyingq:
+                print(", ", k, sep = '', end = '')
+            print(": can't find a formula.\n")
             self._formula_status = -100
             return m
 
@@ -1141,7 +1143,7 @@ class FDFormula:
                 self._lcombination_coefs[j] += k[i] * coefs[i][j]
 
         self._data = _FDData(n, points, k, m, coefs)
-        M = self._test_formula_validity()
+        M = self._test_formula_validity(True)
         find_oneq : bool = self._formula_status == -100
 
         # perhaps, the coefficients k[:] is correct, but m is not
@@ -1158,14 +1160,13 @@ class FDFormula:
 
         if find_oneq:
             # v0.7.3
-            print(">>>>> Your input doesn't define a valid finite difference",
-                  "formula.\n\nHowever, it is still activated for your",
-                  "examination.\n")
+            print(">>>>> Your input doesn't define a valid formula, but it is",
+                  "still activated for your examination.\n")
 
             self._formula_status = 250 # force to activate Python function
             # 250, reserved for communication w/ another 'activatepythonfunction'
         else: # v0.7.3
-            print(">>>>> Your input defines a valid finite difference formula.\n")
+            print(">>>>> Your input defines a valid formula.\n")
 
         self._computedq = True         # assume a formula has been computed
 
