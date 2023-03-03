@@ -699,7 +699,7 @@ class FDFormula:
         points = self._data.points
         length = len(points)
 
-        if self._range_inputq:
+        if length > 4 and self._range_inputq:  # v0.7.4, length > 4
             input_points = self._range_input
         else:
             input_points = points
@@ -718,10 +718,13 @@ class FDFormula:
                     ds = "**(%d)" % i
                 fnxi = "f" + ds + "(x[i])"
 
-                print("***** Error: ", n, ", ", input_points, ", : i = ", i, ", ",
+                print("***** Error: ", n, ", ", input_points, sep = '', end = '')
+                if verifyingq:
+                    print(", ", k, sep = '', end = '')
+                print(": i = ", i, ", ",
                       "k[1]*coefs[1][", i, "] + k[2]*coefs[2][", i, "] + ... = ", x,
                       " != 0, i.e., ", fnxi, " can't be eliminated as indicated ",
-                        "in the following computing result:", sep = '')
+                      "in the following computing result:", sep = '')
                 print(self._dashline())
                 print(self._lcombination_expr(self._data), "=\n    ", end = '')
                 self._print_taylor(self._lcombination_coefs, 5)
@@ -1004,10 +1007,14 @@ class FDFormula:
     # end of decimalplaces
 
     def _format_of_points(self, points):
-        if len(points) == len(range(points[0], points[-1] + 1)):
+        length = len(points)
+        if length == len(range(points[0], points[-1] + 1)):
             self._range_inputq = True
             self._range_input  = range(points[0], points[-1] + 1)
-            return self._range_input
+            if length < 5:
+                return points   # v0.7.3
+            else:
+                return self._range_input
         return points
     # end of _format_of_points
 
