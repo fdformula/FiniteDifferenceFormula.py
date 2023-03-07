@@ -182,17 +182,17 @@ class FDFormula:
             if coefs[n] == 0:
                 continue
 
-            print(self._c2s(coefs[n], first_termq), sep = '', end='')
+            print(self._c2s(coefs[n], first_termq), sep = '', end = '')
             if abs(coefs[n]) != 1:
-                print("* ", sep = '', end='')
+                print("* ", sep = '', end = '')
             if n <= 3:
-                print("f", "'" * n, "(x[i])", sep = '', end='')
+                print("f", "'" * n, "(x[i])", sep = '', end = '')
             else:
-                print("f**(", n, ")(x[i])", sep = '', end='')
+                print("f**(", n, ")(x[i])", sep = '', end = '')
             if n >= 1:
-                print(" * h", sep = '', end='')
+                print(" * h", sep = '', end = '')
                 if n > 1:
-                    print("**", n, sep = '', end='')
+                    print("**", n, sep = '', end = '')
             first_termq = False
 
             num_of_nonzero_terms -= 1
