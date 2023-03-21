@@ -210,22 +210,22 @@ class FDFormula:
                   " is expected.", sep = '')
             return []
 
-        oldlen = len(points)
+        length = len(points)
         all_intq = True
         for i in points:
             if not isinstance(i, int):
                 all_intq = False
                 break
-        if oldlen == 0 or isinstance(points, tuple) or not all_intq:
+        if length == 0 or isinstance(points, tuple) or not all_intq:
             print("Invalid input, ", points, ". A list of integers like",
                   " range(-1, 3) or [-1, 0, 1, 2] is expected.", sep = '')
             return []
         if not isinstance(printformulaq, bool):
             print("Invalid input, ", printformulaq, ". A value, False or ",
                   "True, is expected.", sep = '')
-            return []
 
-        points = sorted(set(points))
+        oldpoints = list(points) # v0.7.4
+        points = sorted(set(points)) # list or sorted
         length = len(points)
         if length < 2:
             print("Invalid input, ", points, ". A list of two or more ",
@@ -233,7 +233,7 @@ class FDFormula:
             return []
 
         self._initialization()
-        if length != oldlen:
+        if oldpoints != points:
             input_points = self._format_of_points(points)
             print(self._dashline(), "\nYour input is converted to (", n, ", ",
                   input_points, sep = '', end = '')
