@@ -1397,7 +1397,7 @@ class FDFormula:
             self._printtaylor1(points_k, n)
             return
 
-        oldpoints = points
+        oldpoints = list(points)
         points = sorted(set(points))
         length = len(points)
         if oldpoints != points:
@@ -1469,7 +1469,7 @@ class FDFormula:
                   "are expected.", sep = '')
             return
 
-        oldorders = orders
+        oldorders = list(orders)
         orders = sorted(set(orders))
         if oldorders != orders:
             print(self._dashline())
