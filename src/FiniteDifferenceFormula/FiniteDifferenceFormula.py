@@ -225,7 +225,7 @@ class FDFormula:
                   "True, is expected.", sep = '')
 
         oldpoints = list(points) # v0.7.4
-        points = sorted(set(points)) # list or sorted
+        points = sorted(set(points))
         length = len(points)
         if length < 2:
             print("Invalid input, ", points, ". A list of two or more ",
@@ -1397,11 +1397,13 @@ class FDFormula:
             self._printtaylor1(points_k, n)
             return
 
-        oldlen = len(points)
+        oldpoints = points
         points = sorted(set(points))
         length = len(points)
-        if oldlen != length:
-            print("Your input, points = ", points, ".", sep = '')
+        if oldpoints != points:
+            print(self._dashline())
+            print("Your input: points = ", points, ".", sep = '')
+            print(self._dashline())
         if length != len(k):
             print("Error: invalid input. The sizes of points and k are",
                   "not the same.")
@@ -1467,11 +1469,14 @@ class FDFormula:
                   "are expected.", sep = '')
             return
 
-        oldlen = len(orders)
+        oldorders = orders
         orders = sorted(set(orders))
-        if oldlen != len(orders):
+        if oldorders != orders:
+            print(self._dashline())
             print("Your input: formulas(", orders, ", ", min_num_of_points,
                   ", ", max_num_of_points, ")", sep = '')
+            print(self._dashline())
+        oldorders = []
 
         for n in orders:
             # forward schemes
