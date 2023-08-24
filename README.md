@@ -1,4 +1,4 @@
-# FiniteDifferenceFormula
+# FiniteDifferenceFormula Toolkit
 
 Ported from a Julia package, https://github.com/fdformula/FiniteDifferenceFormula.jl, this
 Python package provides a comprehensive toolkit for generating finite difference formulas, working with Taylor series expansions,
