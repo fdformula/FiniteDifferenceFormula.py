@@ -183,7 +183,7 @@ fd.compute(2, range(-3,1), True)       # find, generate, and print "4"-point bac
 fd.compute(3, range(-9,10))            # find "19"-point central formula for f'''(x[i])
 fd.decimalplaces(6)                    # use 6 decimal places to generate Python functions of computed formulas
 fd.compute(2, [-3, -2, 1, 2, 7])       # find formula for f''(x[i]) using points x[i+j], j = -3, -2, 1, 2, and 7
-fd.compute(1,range(-230, 231))         # find "461"-point central formula for f'(x[i]). does it exist? run the code!
+fd.compute(1, range(-230, 231))        # find "461"-point central formula for f'(x[i]). does it exist? run the code!
 fd.formula()                           # generate and print the formula computed last time you called compute(...)
 fd.truncationerror()                   # print and return the truncation error of the newly computed formula
 fd.taylor(-2, 50)                      # print the first 50 terms of the Taylor series of f(x[i-2]) about x[i]
