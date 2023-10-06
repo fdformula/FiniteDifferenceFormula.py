@@ -414,7 +414,7 @@ class FDFormula:
         #     return None
         # end
         #
-        # setup a linear system Ax = B first
+        # setup a linear system Ak = B first
         length = len(points)
         max_num_of_terms = max(length, n) + self._NUM_OF_EXTRA_TAYLOR_TERMS
         #
@@ -450,9 +450,10 @@ class FDFormula:
         #
         # where j = 1, 2, ..., len but not n.
         #
-        A = [[Fraction(0) for col in range(length + 1)] for row in range(length)]
+        A = [[Fraction(0) for col in range(length)] for row in range(length)]
         A[0][0]      = Fraction(1)  # 1st row is [1, 0,...,0] so that k[1] = 1
-        A[0][length] = Fraction(1)  # last column [1, ..., 0, 0] so that k[1] = 1
+        k = [Fraction(0) for col in range(length)]
+        k[0] = 1
         #
         row = 1
         for order in range(length):  # correspond to f(x[i]), f'(x[i]), f''(x[i]), ...
@@ -467,9 +468,7 @@ class FDFormula:
             row += 1
             if row == length:
                 break
-        ###for i in range(length):
-        ###    print(A[i])
-        #
+
         # The homogeneous linear system (1) has no nontrivial solution or has
         # inifinitely many nontrivial solutions. It is understandable that it may
         # not have a nontrivial solution. But why inifinitely many nontrivial
@@ -491,9 +490,61 @@ class FDFormula:
         # x[i+points[2]], ..., x[i+points[len]])? Therefore, we can assume that
         # k[1] != 0.
         #
-        # solve Ax = B for x, i.e., k[:]
-        A = self._rref(A)
-        k = [ A[row][length] for row in range(length) ]
+        # solve Ak = B for k
+        # A = self._rref(A) # _rref(A) is removed and its code is as follows. 10/5/2023
+
+        # -------------------------- begin of _rref(A) --------------------------
+        # input: A, n x (n + 1) "matrix" of Fraction numbers
+        # output: a "matrix" in reduced row echelon form
+        #
+        # input: A = [1 0 0 ... 0 | 1; ...] # the 1st row is set so
+
+        # optimized again on 10/5/2023 for the purpose of this project. at the
+        # end, # A is "virtually" an identity matrix (but not actually). the time
+        # performance has a 35% increase with Julia.
+        #
+        # assume: A is invertible
+        #
+        # Apply Gauss-Jordan elimination to [A | k] and k is finally the solution
+        row = length - 1
+        i = 0
+        while i < row: # Gauss elimination
+            j = i + 1
+            # make A[i][i] the pivotal entry
+            if i != 0:                      # A[0][0] is already the pivotal entry
+                m, mi = abs(A[i][i]), i     # pivoting by finding the largest entry
+                for r in range(j, length):  # on A[i : length][i]
+                    absv = abs(A[r][i])
+                    if absv > m:
+                        m, mi = absv, r
+                if mi != i:                 # interchange two rows
+                    A[i][i : length], A[mi][i : length] = A[mi][i : length], A[i][i : length]
+                    k[i], k[mi] = k[mi], k[i]
+
+                # Can A[i][i] == 0 ?!
+                for c in range(j, length):      # have A[i][i] = 1
+                    A[i][c] /= A[i][i]
+                k[i] /= A[i][i]
+                ## A[i][i] = Fraction(1)    # unnecessary
+
+            for r in range(j, length):      # eliminate entries below A[i][i]
+                if A[r][i] != 0:
+                    for c in range(j, length):
+                        A[r][c] -= A[r][i] * A[i][c]
+                    k[r] -= A[r][i] * k[i]
+                    ## A[r][i] = Fraction(0)
+            i = j
+        k[row] /= A[row][row]               # the last row
+        ## A[row][row] = Fraction(1)
+
+        for i in range(row, 0, -1):         # eliminate entries above A[i][i]
+            for r in range(0, i):
+                if A[r][i] != 0:
+                    k[r] -= k[i] * A[r][i]
+                    ## A[r][i] = Fraction(0)
+        # -------------------------- end of _rref(A) --------------------------
+
+        A = []
         ### k = k / gcd(*k)
         #
         # make each element of k[:] an integer
@@ -592,42 +643,6 @@ class FDFormula:
         self._computedq = True
         self._test_formula_validity(True)
     # end of loadcomputingresults
-
-    # input: A, n x (n + 1) "matrix" of Fraction numbers
-    # output: a "matrix" in reduced row echelon form
-    #
-    # customized code from Julia RowEchelon v0.2.1, also vectorized, simplified
-    # input: A = [1 0 0 ... 0 | 1; ...] # the 1st row is set so
-    def _rref(self, A):
-        nr = len(A)
-        nc = nr + 1
-        i = j = 0                           # A[i, j], pivot entries
-        while i < nr and j < nc:
-            J = j + 1
-            if i != 0:
-                m, mi = abs(A[i][j]), i     # pivoting by finding the largest entry
-                for r in range(i + 1, nr):  # on A[i : nr][j]
-                    absv = abs(A[r][j])
-                    if absv > m:
-                        m, mi = absv, r
-                if m == 0:
-                    j = J
-                    continue
-                if mi != i:                 # interchange two rows
-                    A[i][j : nc], A[mi][j : nc] = A[mi][j : nc], A[i][j : nc]
-                for c in range(J, nc):
-                    A[i][c] /= A[i][j]
-                A[i][j] = Fraction(1)
-            for r in range(nr):
-                if r == i or A[r][j] == 0:
-                    continue
-                for c in range(J, nc):
-                    A[r][c] -= A[r][j] * A[i][c]
-                A[r][j] = Fraction(0)
-            i += 1
-            j  = J
-        return A
-    # end of _rref
 
     # return a string of the linear combination
     # k[1]*f(x[i+points[1]]) + k[2]*f(x[i+points[2]]) + ...
