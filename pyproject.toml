@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "FiniteDifferenceFormula"
-version = "0.7.4"
+version = "0.7.5"
 authors = [
   { name="David Wang", email="dwang2000@gmail.com" },
 ]
 maintainers = [
   {name = "David Wang", email = "dwang2000@gmail.com" }
 ]
-description = "A general finite difference formula generator and a tool for teaching the finite difference method"
+description = "A general and comprehensive toolkit for generating finite difference formulas, working with Taylor series expansions, and teaching/learning finite difference formulas in Python"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
