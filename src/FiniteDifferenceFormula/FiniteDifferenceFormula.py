@@ -88,7 +88,7 @@ class FDFormula:
     fdd                       = None
 
     # environment for experiments
-    _x                        = [ 0.01 * i for i in range(0, 1001) ]
+    _x                        = []
     _h                        = 0.01
 
     # This function returns the first 'max_num_of_terms' terms of Taylor series of
@@ -1260,12 +1260,14 @@ class FDFormula:
         # v0.7.6, data points are determined according to input points rather than
         # f, x, i, h = sin, 0:0.01:10, 500, 0.01
         center = max(list(map(lambda x: abs(x), self._data.points))) + 1
-        stop = center * 2
-        self._x = [ 0.01 * i for i in range(0, stop) ]
+        if center < 251:
+            center = 251
+        stop = center * 2 + 1
+        self._x = [ self._h * i for i in range(0, stop) ]
 
         print("from math import sin, cos, tan, pi, exp, log")
-        print("f, i, h = sin, ", center, ", 0.01   # xi = %.2f" % self._x[center], sep = '')
-        print("x = [ 0.01 * i for i in range(0, ", stop, ") ]", sep = '')
+        print("f, i, h = sin, ", center, ", ", self._h, " # xi = %.2f" % self._x[center], sep = '')
+        print("x = [ ", self._h, " * i for i in range(0, ", stop, ") ]", sep = '')
         print("fd.fde(f, x, i, h)   # ", self._python_func_basename, "e", sep = '')
         if count == 3:
             print("fd.fde1(f, x, i, h)  # ", self._python_func_basename, "e1", sep = '')
