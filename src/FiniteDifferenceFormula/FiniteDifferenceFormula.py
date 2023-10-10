@@ -1212,8 +1212,8 @@ class FDFormula:
         return None
     # end of verifyformula
 
-    def _printexampleresult(self, suffix, exact):
-        apprx = eval("self.fd" + suffix + "(math.sin, self._x, 500, self._h)")
+    def _printexampleresult(self, suffix, i, exact):
+        apprx = eval("self.fd" + suffix + "(math.sin, self._x, " + str(i) + ", self._h)")
         relerr = abs((apprx - exact) / exact) * 100
         spaces = ""
         if suffix != "e1":
@@ -1256,23 +1256,30 @@ class FDFormula:
         print("The following function(s) is available ",
               "temporarily in the FiniteDifferenceFormula module.\n\n",
               "Usage:\n=====", sep = '')
+
+        # v0.7.6, data points are determined according to input points rather than
+        # f, x, i, h = sin, 0:0.01:10, 500, 0.01
+        center = max(list(map(lambda x: abs(x), self._data.points))) + 1
+        stop = center * 2
+        self._x = [ 0.01 * i for i in range(0, stop) ]
+
         print("from math import sin, cos, tan, pi, exp, log")
-        print("f, i, h = sin, 500, 0.01")
-        print("x = [ 0.01 * i for i in range(0, 1001) ]")
+        print("f, i, h = sin, ", center, ", 0.01   # xi = %.2f" % self._x[center], sep = '')
+        print("x = [ 0.01 * i for i in range(0, ", stop, ") ]", sep = '')
         print("fd.fde(f, x, i, h)   # ", self._python_func_basename, "e", sep = '')
-        if count ==3:
+        if count == 3:
             print("fd.fde1(f, x, i, h)  # ", self._python_func_basename, "e1", sep = '')
             print("fd.fdd(f, x, i, h)   # ", self._python_func_basename, "d", sep = '')
 
         # sine is taken as the example b/c sin**(n)(x) = sin(n π/2 + x), simply
-        exact = math.sin(self._data.n * math.pi /2 + 5) # x[500] = 5
+        exact = math.sin(self._data.n * math.pi / 2 + self._x[center])
 
         print("\nFor the", self._python_func_basename,
               "formula the computing results are as follows.")
-        self._printexampleresult("e", exact)
+        self._printexampleresult("e", center, exact)
         if count == 3:
-            self._printexampleresult("e1", exact)
-            self._printexampleresult("d", exact)
+            self._printexampleresult("e1", center, exact)
+            self._printexampleresult("d", center, exact)
         length = len("fd.fde")
         #if count == 3:
         #    length += 1
