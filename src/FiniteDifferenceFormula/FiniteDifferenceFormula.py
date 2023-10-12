@@ -115,7 +115,7 @@ class FDFormula:
 
     # for future coders/maintainers of this package:
     # to compute a new formula, this function must be called first.
-    def _initialization(self):
+    def _reset(self):  # v0.7.7, renamed from _initialization()
         self._data                     = None
         self._computedq                = False
         self._formula_status           = 0
@@ -135,7 +135,7 @@ class FDFormula:
         self.fde                       = None
         self.fde1                      = None
         self.fdd                       = None
-    # end of _initialization
+    # end of _reset
 
     # convert a coefficient to a readable string
     def _c2s(self, c, first_termq = False, decimalq = False):
@@ -224,15 +224,22 @@ class FDFormula:
             print("Invalid input, ", printformulaq, ". A value, False or ",
                   "True, is expected.", sep = '')
 
-        oldpoints = list(points) # v0.7.4
-        points = sorted(set(points))
+        # v0.7.7, handling exceptions
+        oldpoints = [] # define the variable. not required by Python (3.12.0)
+        try:
+            oldpoints = list(points) # v0.7.4
+            points = sorted(set(points))
+        except MemoryError:
+            print('Memory allocation error: _validate_input.')
+            return []
+
         length = len(points)
         if length < 2:
             print("Invalid input, ", points, ". A list of two or more ",
                   "different points is expected.", sep = '')
             return []
 
-        self._initialization()
+        self._reset()
         if oldpoints != points:
             input_points = self._format_of_points(points)
             print(self._dashline(), "\nYour input is converted to (", n, ", ",
@@ -421,8 +428,16 @@ class FDFormula:
         # setup the coefficients of Taylor series expansions of f(x) at each of
         # the involved points
         #
-        self._lcombination_coefs = [Fraction(0,1)] * max_num_of_terms
-        coefs = [Fraction(0,1)] * max_num_of_terms
+        # v0.7.7, handling exceptions
+        coefs = [] # define the variable. not required by Python
+        try:
+            self._lcombination_coefs = [Fraction(0,1)] * max_num_of_terms
+            coefs = [Fraction(0,1)] * max_num_of_terms
+        except MemoryError:
+            print('Memory allocation error: _compute #1.')
+            self._reset()
+            return None
+
         for i in range(length):
             coefs[i] = self._taylor_coefs(points[i], max_num_of_terms)
         #
@@ -450,9 +465,17 @@ class FDFormula:
         #
         # where j = 1, 2, ..., len but not n.
         #
-        A = [[Fraction(0) for col in range(length)] for row in range(length)]
-        A[0][0]      = Fraction(1)  # 1st row is [1, 0,...,0] so that k[1] = 1
-        k = [Fraction(0) for col in range(length)]
+        # v0.7.7, handling exceptions
+        A = [] # define the variables. not required by Python
+        k = []
+        try:
+            A = [[Fraction(0) for col in range(length)] for row in range(length)]
+            k = [Fraction(0) for col in range(length)]
+        except MemoryError:
+            print('Memory allocation error: _compute #2.')
+            self._reset()
+            return None
+        A[0][0]      = Fraction(1)   # 1st row is [1, 0,...,0] so that k[1] = 1
         k[0] = 1
         #
         row = 1
@@ -614,7 +637,7 @@ class FDFormula:
             print("Invalid input. A tuple of the form (n, points, k, m) is expected.")
             return
 
-        self._initialization()
+        self._reset()
         n, points, k, m, = results
         points = list(points)
         self._format_of_points(points)
@@ -1092,7 +1115,7 @@ class FDFormula:
             print("Error: The number of points != the number of coefficients.");
             return None
 
-        self._initialization()      # needed b/c it's like computing a new formula
+        self._reset()      # needed b/c it's like computing a new formula
         input_points = self._format_of_points(points)
 
         rewrittenq = False
@@ -1213,7 +1236,13 @@ class FDFormula:
     # end of verifyformula
 
     def _printexampleresult(self, suffix, i, exact):
-        apprx = eval("self.fd" + suffix + "(math.sin, self._x, " + str(i) + ", self._h)")
+        #0.7.7, handling exceptions
+        apprx = 0.0 # define the variable, not required by Python
+        try:
+            apprx = eval("self.fd" + suffix + "(math.sin, self._x, " + str(i) + ", self._h)")
+        except MemoryError:
+            print('Memory allocation error: _printexampleresult.')
+            return -1 # failure
         relerr = abs((apprx - exact) / exact) * 100
         spaces = ""
         if suffix != "e1":
@@ -1221,6 +1250,7 @@ class FDFormula:
         print("  fd.fd", suffix, "(f, x, i, h)  ",
               spaces, "# result: ", "%.16f, " % apprx,
               "relative error = ", "%.8f%%" % relerr, sep = '')
+        return 0      # success
     # end of _printexampleresult
 
     def activatepythonfunction(self, external_dataq = False):
@@ -1263,7 +1293,14 @@ class FDFormula:
         if center < 251:
             center = 251
         stop = center * 2 + 1
-        self._x = [ self._h * i for i in range(0, stop) ]
+
+        # v0.7.7, handling exceptions
+        try:
+            self._x = [ self._h * i for i in range(0, stop) ]
+        except MemoryError:
+            self._x = []
+            print('Memory allocation error: activatepythonfunction.')
+            return
 
         print("from math import sin, cos, tan, pi, exp, log")
         print("f, i, h = sin, ", center, ", ", self._h, " # xi = %.2f" % self._x[center], sep = '')
@@ -1278,10 +1315,9 @@ class FDFormula:
 
         print("\nFor the", self._python_func_basename,
               "formula the computing results are as follows.")
-        self._printexampleresult("e", center, exact)
-        if count == 3:
-            self._printexampleresult("e1", center, exact)
-            self._printexampleresult("d", center, exact)
+        if self._printexampleresult("e", center, exact) == 0 and count == 3:
+            if self._printexampleresult("e1", center, exact) == 0:
+                self._printexampleresult("d", center, exact)
         length = len("fd.fde")
         #if count == 3:
         #    length += 1
@@ -1534,7 +1570,7 @@ class FDFormula:
                         print(x, "-point central finite difference formula:", sep = '')
                         self._print_bigo_formula(self._data, self._bigO)
                     #else:
-                    #   self._initialization() # v0.6.9
+                    #   self._reset() # v0.6.9
     # end of formulas
 
 # end of class FDFormula:
