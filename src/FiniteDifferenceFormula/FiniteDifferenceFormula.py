@@ -116,6 +116,8 @@ class FDFormula:
     # for future coders/maintainers of this package:
     # to compute a new formula, this function must be called first.
     def _reset(self):  # v0.7.7, renamed from _initialization()
+        if len(self._x) > 201: # v0.7.8
+            self._x = []
         self._data                     = None
         self._computedq                = False
         self._formula_status           = 0
@@ -1289,9 +1291,9 @@ class FDFormula:
 
         # v0.7.6, data points are determined according to input points rather than
         # f, x, i, h = sin, 0:0.01:10, 500, 0.01
-        center = max(list(map(lambda x: abs(x), self._data.points))) + 1
-        if center < 251:
-            center = 251
+        center = max(abs(self._data.points[0]), abs(self._data.points[-1]))
+        if center < 100:
+            center = 100
         stop = center * 2 + 1
 
         # v0.7.7, handling exceptions
