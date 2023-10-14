@@ -1298,7 +1298,7 @@ class FDFormula:
 
         # v0.7.7, handling exceptions
         try:
-            # self._x = [ self._h * i for i in range(0, stop) ] # very poor for large stop
+            # self._x = [ self._h * i for i in range(0, stop) ] # poor for huge ranges
             self._x = [None] * stop
             xi = 0.0; i = 0
             while i < stop:
